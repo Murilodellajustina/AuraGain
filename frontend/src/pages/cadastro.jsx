@@ -30,9 +30,14 @@ export default function Cadastrar() {
     }
 
     return (
-        <div className="container-fluid vh-100 d-flex justify-content-center align-items-center bg-light">
+        <div className="container-fluid vh-100 d-flex justify-content-center align-items-center bg-dark"
+            style={{
+                backgroundColor: '#11998e',
+                backgroundImage: 'linear-gradient(to right, #021f1d, #0ab677 ,  #1d7a41)',
+                overflowX: 'hidden'
+            }}>
             <div
-                className="card shadow p-4"
+                className="card shadow p-4 bg-dark text-white"
                 style={{ width: "100%", maxWidth: "400px" }}
             >
                 <img
@@ -50,7 +55,7 @@ export default function Cadastrar() {
 
                         <input
                             type="nome"
-                            className="form-control"
+                            className="form-control bg-secondary text-white"
                             placeholder="..."
                             value={nome}
                             onChange={(e) => setNome(e.target.value)}
@@ -62,7 +67,7 @@ export default function Cadastrar() {
 
                         <input
                             type="sobrenome"
-                            className="form-control"
+                            className="form-control bg-secondary text-white"
                             placeholder="..."
                             value={sobrenome}
                             onChange={(e) => setSobrenome(e.target.value)}
@@ -74,7 +79,7 @@ export default function Cadastrar() {
 
                         <input
                             type="cpf"
-                            className="form-control"
+                            className="form-control bg-secondary text-white"
                             placeholder="***.***.***-**"
                             value={cpf}
                             onChange={(e) => setCpf(e.target.value)}
@@ -86,7 +91,7 @@ export default function Cadastrar() {
 
                         <input
                             type="date"
-                            className="form-control"
+                            className="form-control bg-secondary text-white"
                             placeholder="01/01/2000"
                             value={dataNascimento}
                             onChange={(e) => setDataNascimento(e.target.value)}
@@ -98,7 +103,7 @@ export default function Cadastrar() {
 
                         <input
                             type="email"
-                            className="form-control"
+                            className="form-control bg-secondary text-white"
                             placeholder="nome@exemplo.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -110,7 +115,7 @@ export default function Cadastrar() {
 
                         <input
                             type="password"
-                            className="form-control"
+                            className="form-control bg-secondary text-white"
                             placeholder="********"
                             value={senha}
                             onChange={(e) => setSenha(e.target.value)}
