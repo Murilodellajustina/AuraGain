@@ -1,0 +1,83 @@
+import { useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import logo from "../imagens/logoAuraGain.png"
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+
+export default function Login() {
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [erro, setErro] = useState("");
+  const navigate = useNavigate();
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    setErro("");
+
+    try {
+      const res = await login(email, senha);
+
+      navigate("/paginaInicial");
+
+    } catch (err) {
+      setErro("Email ou senha incorretos");
+      if (senha.length < 6) setErro("A senha deve ter 6 digitos!!");
+      console.error(err);
+    }
+  }
+
+  return (
+    <div className="container-fluid vh-100 d-flex justify-content-center align-items-center bg-light">
+      <div
+        className="card shadow p-4"
+        style={{ width: " %", maxWidth: "400px" }}
+      >
+        <img
+          src={logo}
+          alt="Logo"
+          className="mx-auto d-block mb-4"
+          style={{ width: "300px" }}
+        />
+        <h2 className="text-center mb-4">Login</h2>
+
+
+        <form>
+          <div className="mb-3">
+            <label className="form-label">Email</label>
+
+            <input
+              type="email"
+              className="form-control"
+              placeholder="nome@exemplo.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Senha</label>
+
+            <input
+              type="password"
+              className="form-control"
+              placeholder="********"
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+            />
+          </div>
+
+          <div className="d-grid">
+            <button className="btn btn-primary" type="button" onClick={handleLogin}>
+              Entrar
+            </button>
+          </div>
+          <div className="text-center mt-3">
+            <p>
+              Não tem uma conta? <Link to="/cadastro">Cadastre-se</Link>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
