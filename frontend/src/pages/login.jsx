@@ -27,9 +27,15 @@ export default function Login() {
   }
 
   return (
-    <div className="container-fluid vh-100 d-flex justify-content-center align-items-center bg-light">
+    <div className="container-fluid vh-100 d-flex justify-content-center align-items-center bg-dark"
+      style={{
+        backgroundColor: '#11998e',
+        backgroundImage: 'linear-gradient(to right, #021f1d, #0ab677 ,  #1d7a41)',
+        overflowX: 'hidden'
+      }}
+      >
       <div
-        className="card shadow p-4"
+        className="card shadow p-4 bg-dark text-white"
         style={{ width: " %", maxWidth: "400px" }}
       >
         <img
