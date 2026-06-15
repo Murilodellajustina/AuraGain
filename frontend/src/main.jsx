@@ -4,11 +4,12 @@ import { createHashRouter, RouterProvider } from "react-router-dom";
 
 import Login from './pages/login.jsx';
 import Cadastro from './pages/cadastro.jsx';
+import PaginaInicial from './pages/paginaInicial.jsx';
 
 const router = createHashRouter([
   { path: "/", element: <Login /> },
-  { path: "/cadastro", element: <Cadastro /> }
-
+  { path: "/cadastro", element: <Cadastro /> },
+  { path: "/paginaInicial", element: <PaginaInicial /> }
 ],
 );
 createRoot(document.getElementById("root")).render(
