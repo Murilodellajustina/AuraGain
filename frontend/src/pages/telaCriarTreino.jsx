@@ -12,26 +12,23 @@ export default function CadastrarTreino() {
 
     const [nome, setNome] = useState("Visitante");
     const [letraInicial, setLetraInicial] = useState("V");
+    const [email, setEmail] = useState("");
     const [exercicios, setExercicios] = useState([]);
+    const [carregando, setCarregando] = useState(false);
 
-    const [linhasExercicios, setLinhasExercicios] = useState([{ id: Date.now() }]);
+    const [linhasExercicios, setLinhasExercicios] = useState([{ id: Date.now(), exercicioId: null, series: '', repeticoes: ''}]);
 
     useEffect(() => {
         const nomeSalvo = localStorage.getItem("userName");
+        const emailSalvo = localStorage.getItem("userEmail");
         if (nomeSalvo) {
             setNome(nomeSalvo.split(" ")[0]);
             setLetraInicial(nomeSalvo.charAt(0).toUpperCase());
+            setEmail(emailSalvo);
         } else {
             navigate("/Login");
         }
-    }, [navigate]);
 
-    function handleLogout() {
-        localStorage.removeItem("userToken");
-        localStorage.removeItem("userName");
-        navigate("/");
-    }
-    useEffect(() => {
         async function carregarExercicio() {
             try {
                 const dados = await listarExercicios();
@@ -43,11 +40,79 @@ export default function CadastrarTreino() {
         }
 
         carregarExercicio();
-    }, [])
+    }, [navigate]);
+
+    function handleLogout() {
+        localStorage.clear();
+        navigate("/");
+    }
 
     const adicionarNovaLinha = () => {
-        setLinhasExercicios([...linhasExercicios, { id: Date.now() }]);
+        setLinhasExercicios([...linhasExercicios, { id: Date.now(), exercicioId: null, series: '', repeticoes: '' }]);
     }
+
+    const handleLinhaChange = (idLinha, campo, valor) => {
+        setLinhasExercicios(linhasAnteriores => 
+            linhasAnteriores.map(linha => 
+                linha.id === idLinha ? { ...linha, [campo]: valor } : linha
+            )
+        );
+    };
+
+    const removerLinha = (idLinha) => {
+        if (linhasExercicios.length > 1) {
+            setLinhasExercicios(linhasExercicios.filter(linha => linha.id !== idLinha));
+        }
+    };
+
+    const handleCadastrarTreino = async () => {
+        if (!opcaoSelecionada) {
+            alert("Por favor, selecione o dia da ficha (ex: SEGUNDA).");
+            return;
+        }
+
+        const exerciciosValidos = linhasExercicios.filter(linha => linha.exercicioId && linha.series && linha.repeticoes);
+        if (exerciciosValidos.length === 0 || exerciciosValidos.length !== linhasExercicios.length) {
+            alert("Por favor, preencha todos os campos (Exercício, Séries e Repetições) nas linhas criadas.");
+            return;
+        }
+
+        setCarregando(true);
+
+        const payload = {
+            diaFicha: opcaoSelecionada.value,
+            emailUsuario: email,
+            exercicios: exerciciosValidos.map(linha => ({
+                exercicioId: linha.exercicioId,
+                series: parseInt(linha.series),
+                repeticoes: parseInt(linha.repeticoes)
+            }))
+        };
+
+        try {
+            const resposta = await fetch("http://localhost:8080/api/treinos", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (resposta.ok) {
+                alert("Treino cadastrado com sucesso!");
+                setOpcaoSelecionada(null);
+                setLinhasExercicios([{ id: Date.now(), exercicioId: null, series: '', repeticoes: '' }]);
+            } else {
+                const erroMsg = await resposta.text();
+                alert("Erro ao salvar: " + erroMsg);
+            }
+        } catch (error) {
+            alert("Erro de conexão com o servidor.");
+            console.error(error);
+        } finally {
+            setCarregando(false);
+        }
+    };
 
     const opcoesExercicios = exercicios.map(exercicio => ({
         value: exercicio.id,
@@ -80,12 +145,12 @@ export default function CadastrarTreino() {
     };
 
     const opcoesDias = [
-        { value: 'A', label: 'SEGUNDA' },
-        { value: 'B', label: 'TERCA' },
-        { value: 'C', label: 'QUARTA' },
-        { value: 'D', label: 'QUINTA' },
-        { value: 'E', label: 'SEXTA' },
-        { value: 'F', label: 'SABADO' },
+        { value: 'A', label: 'FICHA A' },
+        { value: 'B', label: 'FICHA B' },
+        { value: 'C', label: 'FICHA C' },
+        { value: 'D', label: 'FICHA D' },
+        { value: 'E', label: 'FICHA E' },
+        { value: 'F', label: 'FICHA F' },
 
     ];
 
@@ -168,7 +233,7 @@ export default function CadastrarTreino() {
                                             onChange={setOpcaoSelecionada}
                                             options={opcoesDias}
                                             isSearchable={true}
-                                            placeholder="Selecione o dia"
+                                            placeholder="Selecione a ficha"
                                             noOptionsMessage={() => "Nenhum resultado encontrado"}
                                         />
                                     </div>
@@ -178,31 +243,47 @@ export default function CadastrarTreino() {
                             </div>
                             <div className="card-body p-0 ">
                                 <ul className="list-group list-group-flush fs-5">
-                                    {linhasExercicios.map((linha) => (
-                                        <div className="d-flex " style={{ marginTop: '20px', marginLeft: '20px' }}>
-                                            <Select
-                                                options={opcoesExercicios}
-                                                placeholder="Selecione um exercício"
-                                                noOptionsMessage={() => "Nenhum resultado encontrado"}
-                                            />
-                                            <div className="d-flex " style={{ marginLeft: '20px' }}>
+                                    {linhasExercicios.map((linha, index) => (
+                                        <div key={linha.id} className="d-flex align-items-center mt-3" style={{ marginTop: '20px', marginLeft: '20px' }}>
+                                            <div className="flex-grow-1">
+                                                <Select
+                                                    options={opcoesExercicios}
+                                                    placeholder="Selecione um exercício"
+                                                    noOptionsMessage={() => "Nenhum resultado encontrado"}
+                                                    value={opcoesExercicios.find(op => op.value === linha.exercicioId) || null}
+                                                    onChange={(opcao) => handleLinhaChange(linha.id, 'exercicioId', opcao ? opcao.value : null)}
+                                                />
+                                            </div>
+                                            <div className="ms-3">
                                                 <input
                                                     type="number"
                                                     className="form-control"
                                                     placeholder="Séries (ex: 3)"
                                                     min="1"
                                                     style={{ width: '130px' }}
+                                                    value={linha.series}
+                                                    onChange={(e) => handleLinhaChange(linha.id, 'series', e.target.value)}
                                                 />
                                             </div>
-                                            <div className="d-flex" style={{marginLeft: '20px'}}>
+                                            <div className="ms-3">
                                                 <input
                                                     type="number"
                                                     className="form-control"
                                                     placeholder="Reps (ex: 12)"
                                                     min="1"
                                                     style={{ width: '130px' }}
+                                                    value={linha.repeticoes}
+                                                    onChange={(e) => handleLinhaChange(linha.id, 'repeticoes', e.target.value)}
                                                 />
                                             </div>
+
+                                            {linhasExercicios.length > 1 && (
+                                                <div className="ms-3">
+                                                    <button className="btn btn-outline-danger" onClick={() => removerLinha(linha.id)}>
+                                                        X
+                                                    </button>
+                                                </div>
+                                            )}
 
                                         </div>
                                     ))}
@@ -212,8 +293,9 @@ export default function CadastrarTreino() {
                                 </button>
                             </div>
                             <div className="card-footer bg-white border-top-0 p-4 d-grid">
-                                <button className="btn btn-success btn-lg fw-bold shadow-sm rounded-3">
-                                    Cadastrar Treino
+                                <button className="btn btn-success btn-lg fw-bold shadow-sm rounded-3" onClick={handleCadastrarTreino}
+                                    disabled={carregando}>
+                                    {carregando ? "Salvando..." : "Cadastrar Treino"}
                                 </button>
                             </div>
                         </div>
