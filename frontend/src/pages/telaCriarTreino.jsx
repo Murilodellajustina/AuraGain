@@ -2,13 +2,19 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import logo from "../imagens/logoAuraGain.png";
+import Select from 'react-select';
+import { listarExercicios } from "../Services/Api";
 
-export default function PaginaInicial() {
+export default function CadastrarTreino() {
     const navigate = useNavigate();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [opcaoSelecionada, setOpcaoSelecionada] = useState(null);
 
     const [nome, setNome] = useState("Visitante");
     const [letraInicial, setLetraInicial] = useState("V");
+    const [exercicios, setExercicios] = useState([]);
+
+    const [linhasExercicios, setLinhasExercicios] = useState([{ id: Date.now() }]);
 
     useEffect(() => {
         const nomeSalvo = localStorage.getItem("userName");
@@ -25,6 +31,28 @@ export default function PaginaInicial() {
         localStorage.removeItem("userName");
         navigate("/");
     }
+    useEffect(() => {
+        async function carregarExercicio() {
+            try {
+                const dados = await listarExercicios();
+                console.log(dados);
+                setExercicios(dados);
+            } catch (erro) {
+                console.error(erro)
+            }
+        }
+
+        carregarExercicio();
+    }, [])
+
+    const adicionarNovaLinha = () => {
+        setLinhasExercicios([...linhasExercicios, { id: Date.now() }]);
+    }
+
+    const opcoesExercicios = exercicios.map(exercicio => ({
+        value: exercicio.id,
+        label: exercicio.nome
+    }));
 
     const sidebarStyle = {
         width: "260px",
@@ -51,9 +79,19 @@ export default function PaginaInicial() {
         display: isSidebarOpen ? "block" : "none"
     };
 
+    const opcoesDias = [
+        { value: 'A', label: 'SEGUNDA' },
+        { value: 'B', label: 'TERCA' },
+        { value: 'C', label: 'QUARTA' },
+        { value: 'D', label: 'QUINTA' },
+        { value: 'E', label: 'SEXTA' },
+        { value: 'F', label: 'SABADO' },
+
+    ];
+
     return (
         <div className="container-fluid min-vh-100 bg-light text-dark p-0" style={{ overflowX: "hidden" }}>
-            
+
             <div style={overlayStyle} onClick={() => setIsSidebarOpen(false)}></div>
 
             <div style={sidebarStyle} className="p-3 border-end">
@@ -61,7 +99,7 @@ export default function PaginaInicial() {
                     <img src={logo} alt="AuraGain Logo" height="35" style={{ filter: 'brightness(0) invert(0)' }} />
                     <button className="btn-close" onClick={() => setIsSidebarOpen(false)}></button>
                 </div>
-                
+
                 <ul className="nav flex-column mb-auto fs-5">
                     <li className="nav-item mb-2">
                         <Link to="/paginaInicial" className="nav-link text-success fw-bold bg-success bg-opacity-10 rounded">
@@ -96,8 +134,8 @@ export default function PaginaInicial() {
 
             <nav className="navbar navbar-light bg-white border-bottom shadow-sm px-3 sticky-top">
                 <div className="d-flex align-items-center">
-                    <button 
-                        className="btn btn-light border-secondary me-3 d-flex align-items-center justify-content-center" 
+                    <button
+                        className="btn btn-light border-secondary me-3 d-flex align-items-center justify-content-center"
                         onClick={() => setIsSidebarOpen(true)}
                         style={{ width: "40px", height: "40px" }}
                     >
@@ -114,85 +152,70 @@ export default function PaginaInicial() {
             </nav>
 
             <div className="container mt-4 mb-5">
-                
+
                 <div className="row gx-4">
-                    
-                    <div className="col-lg-7 mb-4">
+
+                    <div className="col-lg-12 mb-4">
                         <div className="card bg-white border-0 shadow-sm h-100 rounded-4 overflow-hidden">
                             <div className="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
-                                <h4 className="mb-0 text-success fw-bold">Treino de Hoje</h4>
-                                <span className="badge bg-success bg-opacity-10 text-success fs-6 border border-success">
-                                    Treino A - Push
-                                </span>
+                                <h4 className="mb-0 text-success fw-bold">Crie seu treino</h4>
                             </div>
                             <div className="card-body p-0">
                                 <ul className="list-group list-group-flush fs-5">
-                                    <li className="list-group-item d-flex justify-content-between align-items-center py-3 px-4 border-bottom">
-                                        <div className="fw-medium text-dark">Supino Reto com Halteres</div>
-                                        <span className="badge bg-light text-dark border rounded-pill fs-6 px-3 py-2">4 x 10</span>
-                                    </li>
-                                    <li className="list-group-item d-flex justify-content-between align-items-center py-3 px-4 border-bottom">
-                                        <div className="fw-medium text-dark">Desenvolvimento Sentado com Halteres</div>
-                                        <span className="badge bg-light text-dark border rounded-pill fs-6 px-3 py-2">3 x 12</span>
-                                    </li>
-                                    <li className="list-group-item d-flex justify-content-between align-items-center py-3 px-4 border-bottom">
-                                        <div className="fw-medium text-dark">Crucifixo Máquina</div>
-                                        <span className="badge bg-light text-dark border rounded-pill fs-6 px-3 py-2">3 x 12</span>
-                                    </li>
-                                    <li className="list-group-item d-flex justify-content-between align-items-center py-3 px-4">
-                                        <div className="fw-medium text-dark">Paralelas (Tríceps)</div>
-                                        <span className="badge bg-light text-dark border rounded-pill fs-6 px-3 py-2">4 x Falha</span>
-                                    </li>
+                                    <div className="col-lg-z d-flex " style={{ marginLeft: '20px' }}>
+                                        <Select
+                                            value={opcaoSelecionada}
+                                            onChange={setOpcaoSelecionada}
+                                            options={opcoesDias}
+                                            isSearchable={true}
+                                            placeholder="Selecione o dia"
+                                            noOptionsMessage={() => "Nenhum resultado encontrado"}
+                                        />
+                                    </div>
+
+
                                 </ul>
+                            </div>
+                            <div className="card-body p-0 ">
+                                <ul className="list-group list-group-flush fs-5">
+                                    {linhasExercicios.map((linha) => (
+                                        <div className="d-flex " style={{ marginTop: '20px', marginLeft: '20px' }}>
+                                            <Select
+                                                options={opcoesExercicios}
+                                                placeholder="Selecione um exercício"
+                                                noOptionsMessage={() => "Nenhum resultado encontrado"}
+                                            />
+                                            <div className="d-flex " style={{ marginLeft: '20px' }}>
+                                                <input
+                                                    type="number"
+                                                    className="form-control"
+                                                    placeholder="Séries (ex: 3)"
+                                                    min="1"
+                                                    style={{ width: '130px' }}
+                                                />
+                                            </div>
+                                            <div className="d-flex" style={{marginLeft: '20px'}}>
+                                                <input
+                                                    type="number"
+                                                    className="form-control"
+                                                    placeholder="Reps (ex: 12)"
+                                                    min="1"
+                                                    style={{ width: '130px' }}
+                                                />
+                                            </div>
+
+                                        </div>
+                                    ))}
+                                </ul>
+                                <button className="btn btn-outline-success fw-bold shadow-sm rounded-3 " style={{ marginTop: '20px', marginLeft: '20px' }} onClick={adicionarNovaLinha}>
+                                    Adicionar exercicio
+                                </button>
                             </div>
                             <div className="card-footer bg-white border-top-0 p-4 d-grid">
                                 <button className="btn btn-success btn-lg fw-bold shadow-sm rounded-3">
-                                    Iniciar Treino
+                                    Cadastrar Treino
                                 </button>
                             </div>
-                        </div>
-                    </div>
-
-                    <div className="col-lg-5">
-                        <div className="d-flex flex-column gap-3">
-                            
-                            <div className="card bg-white border-0 shadow-sm rounded-4 p-3 d-flex flex-row align-items-center">
-                                <div className="bg-primary bg-opacity-10 rounded-circle p-3 me-3 text-primary fs-3">
-                                    📅
-                                </div>
-                                <div>
-                                    <h6 className="card-title text-secondary mb-1">Treinos na Semana</h6>
-                                    <p className="card-text fs-3 fw-bold text-dark mb-0">4 <span className="fs-5 text-muted fw-normal">/ 6</span></p>
-                                </div>
-                            </div>
-
-                            <div className="card bg-white border-0 shadow-sm rounded-4 p-3 d-flex flex-row align-items-center">
-                                <div className="bg-info bg-opacity-10 rounded-circle p-3 me-3 text-info fs-3">
-                                    ⚖️
-                                </div>
-                                <div>
-                                    <h6 className="card-title text-secondary mb-1">Peso Atual</h6>
-                                    <p className="card-text fs-3 fw-bold text-dark mb-0">106.9 kg</p>
-                                </div>
-                            </div>
-
-                            <div className="card bg-white border-0 shadow-sm rounded-4 p-3 d-flex flex-row align-items-center">
-                                <div className="bg-warning bg-opacity-10 rounded-circle p-3 me-3 text-warning fs-3">
-                                    ⚡
-                                </div>
-                                <div>
-                                    <h6 className="card-title text-secondary mb-1">Próximo Foco</h6>
-                                    <p className="card-text fs-4 fw-bold text-dark mb-0">Treino B - Pull</p>
-                                </div>
-                            </div>
-
-                            <div className="card text-black border-0 shadow-sm rounded-4 mt-2">
-                                <div className="card-body p-4">
-                                    <h5 className="fw-bold mb-2">Desempenho em Alta! 🔥</h5>
-                                    <p className="mb-0 text-black-50">Você aumentou sua carga no supino em 5kg este mês. Continue assim!</p>
-                                </div>
-                            </div>
-
                         </div>
                     </div>
 
