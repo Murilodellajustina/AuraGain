@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface TreinoRepository extends JpaRepository<Treino, Long> {
-    List<Treino> findByUsuarioId(Long usuarioId);
+    List<Treino> findByUsuarioEmail(String email);
 }

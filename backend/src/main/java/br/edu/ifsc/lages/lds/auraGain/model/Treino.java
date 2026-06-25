@@ -1,5 +1,8 @@
 package br.edu.ifsc.lages.lds.auraGain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
+import java.util.List;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,5 +30,10 @@ public class Treino {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id", nullable = false)
+    @JsonIgnore
     private Usuario usuario;
+
+    @OneToMany(mappedBy = "treino", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TreinoExercicio> exercicios = new ArrayList<>();
+
 }
