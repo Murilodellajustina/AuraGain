@@ -1,10 +1,16 @@
 package br.edu.ifsc.lages.lds.auraGain.controller;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import br.edu.ifsc.lages.lds.auraGain.dto.PesoDTO;
 import br.edu.ifsc.lages.lds.auraGain.dto.TreinoRequestDTO;
 import br.edu.ifsc.lages.lds.auraGain.model.Treino;
+import br.edu.ifsc.lages.lds.auraGain.model.TreinoExercicio;
+import br.edu.ifsc.lages.lds.auraGain.repository.TreinoExercicioRepository;
+import br.edu.ifsc.lages.lds.auraGain.repository.TreinoRepository;
 import br.edu.ifsc.lages.lds.auraGain.service.TreinoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +25,13 @@ import java.util.List;
 @RequestMapping("/api/treinos")
 @CrossOrigin(origins = "*")
 public class TreinoController {
-    
+
+    @PutMapping("/pesos")
+    public ResponseEntity<?> atualizarPesos(@RequestBody List<PesoDTO> pesos) {
+        treinoService.atualizarPesos(pesos);
+        return ResponseEntity.ok().build();
+    }
+
     @Autowired
     private TreinoService treinoService;
 

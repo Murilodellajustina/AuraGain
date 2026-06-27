@@ -4,6 +4,7 @@ public class ItemTreinoDTO {
     private Long exercicioId;
     private Integer series;
     private Integer repeticoes;
+    private Integer pesos;
 
     public Long getExercicioId() { return exercicioId; }
     public void setExercicioId(Long exercicioId) { this.exercicioId = exercicioId; }
@@ -13,4 +14,8 @@ public class ItemTreinoDTO {
     
     public Integer getRepeticoes() { return repeticoes; }
     public void setRepeticoes(Integer repeticoes) { this.repeticoes = repeticoes; }
+
+    
+    public Integer getPesos() { return pesos; }
+    public void setOesos(Integer pesos) { this.pesos = pesos; }
 }

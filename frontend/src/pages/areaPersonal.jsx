@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import logo from "../imagens/logoAuraGain.png";
+import Sidebar from "../components/sideBar";
 
 export default function AreaPersonal() {
     const navigate = useNavigate();
@@ -87,27 +88,8 @@ export default function AreaPersonal() {
     const fallbackImage = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"; // Imagem padrão caso o personal não tenha foto
 
     return (
-        <div className="container-fluid min-vh-100 bg-light text-dark p-0">
-            <div style={overlayStyle} onClick={() => setIsSidebarOpen(false)}></div>
-
-            <div style={sidebarStyle} className="p-3 border-end">
-                <div className="d-flex justify-content-between align-items-center mb-4 mt-2">
-                    <img src={logo} alt="AuraGain" height="35" />
-                    <button className="btn-close" onClick={() => setIsSidebarOpen(false)}></button>
-                </div>
-                <ul className="nav flex-column mb-auto fs-5">
-                    <li className="nav-item mb-2"><Link to="/paginaInicial" className="nav-link text-dark">🏠 Dashboard</Link></li>
-                    <li className="nav-item mb-2"><Link to="/telaCriarTreino" className="nav-link text-dark">🏋️ Criar treinos</Link></li>
-                    <li className="nav-item mb-2"><Link to="/area-personal" className="nav-link text-success fw-bold bg-success bg-opacity-10 rounded">🎓 Área do Personal</Link></li>
-                </ul>
-            </div>
-
-            <nav className="navbar navbar-light bg-white border-bottom shadow-sm px-3 sticky-top">
-                <div className="d-flex align-items-center">
-                    <button className="btn btn-light me-3" onClick={() => setIsSidebarOpen(true)}>☰</button>
-                    <h5 className="mb-0 fw-bold text-success">AuraGain</h5>
-                </div>
-            </nav>
+        <div className="container-fluid min-vh-100 bg-light text-dark p-0" style={{ overflowX: "hidden" }}>
+            <Sidebar>
 
             <div className="container mt-4 mb-5">
                 {userPerfil !== "PERSONAL" && (
@@ -209,6 +191,7 @@ export default function AreaPersonal() {
                     </div>
                 )}
             </div>
+            </Sidebar>
         </div>
     );
 }
