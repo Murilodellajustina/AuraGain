@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import logo from "../imagens/logoAuraGain.png";
 import Select from 'react-select';
 import { listarExercicios } from "../Services/Api";
 import Sidebar from "../components/sideBar";
 
-export default function CadastrarTreino() {
+export default function CadastrarTreinoAluno() {
     const navigate = useNavigate();
+    const location = useLocation();
+
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [opcaoSelecionada, setOpcaoSelecionada] = useState(null);
 
@@ -16,6 +18,9 @@ export default function CadastrarTreino() {
     const [email, setEmail] = useState("");
     const [exercicios, setExercicios] = useState([]);
     const [carregando, setCarregando] = useState(false);
+
+    const emailDoAluno = location.state?.emailAluno;
+    const nomeDoAluno = location.state?.nomeAluno;
 
     const [linhasExercicios, setLinhasExercicios] = useState([{ id: Date.now(), exercicioId: null, series: '', repeticoes: '' }]);
 
@@ -66,9 +71,14 @@ export default function CadastrarTreino() {
         }
     };
 
-    const handleCadastrarTreino = async () => {
+    const handleCadastrarTreinoAluno = async (emailUsuario) => {
         if (!opcaoSelecionada) {
             alert("Por favor, selecione o dia da ficha (ex: SEGUNDA).");
+            return;
+        }
+
+        if (!emailDoAluno) {
+            alert("Erro: O email do aluno não foi encontrado. Volte à listagem e tente novamente.");
             return;
         }
 
@@ -82,13 +92,15 @@ export default function CadastrarTreino() {
 
         const payload = {
             diaFicha: opcaoSelecionada.value,
-            emailUsuario: email,
+            emailUsuario: emailDoAluno,
             exercicios: exerciciosValidos.map(linha => ({
                 exercicioId: linha.exercicioId,
                 series: parseInt(linha.series),
                 repeticoes: parseInt(linha.repeticoes)
             }))
         };
+
+        console.log("Payload sendo enviado para o Spring Boot:", JSON.stringify(payload, null, 2));
 
         try {
             const resposta = await fetch("http://localhost:8080/api/treinos", {
@@ -141,7 +153,7 @@ export default function CadastrarTreino() {
                         <div className="col-lg-12 mb-4">
                             <div className="card bg-white border-0 shadow-sm h-100 rounded-4 overflow-hidden">
                                 <div className="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
-                                    <h4 className="mb-0 text-success fw-bold">Crie seu treino</h4>
+                                    <h4 className="mb-0 text-success fw-bold">Montar treino de {nomeDoAluno || "Aluno"}</h4>
                                 </div>
                                 <div className="card-body p-0">
                                     <ul className="list-group list-group-flush fs-5">
@@ -211,7 +223,7 @@ export default function CadastrarTreino() {
                                     </button>
                                 </div>
                                 <div className="card-footer bg-white border-top-0 p-4 d-grid">
-                                    <button className="btn btn-success btn-lg fw-bold shadow-sm rounded-3" onClick={handleCadastrarTreino}
+                                    <button className="btn btn-success btn-lg fw-bold shadow-sm rounded-3" onClick={handleCadastrarTreinoAluno}
                                         disabled={carregando}>
                                         {carregando ? "Salvando..." : "Cadastrar Treino"}
                                     </button>

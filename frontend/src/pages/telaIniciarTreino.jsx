@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import { useNavigate, useLocation } from "react-router-dom";
 import { listarExercicios } from "../Services/Api";
 import Sidebar from "../components/sideBar";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 export default function IniciarTreino() {
 
@@ -64,6 +66,44 @@ export default function IniciarTreino() {
         }
     }
 
+    async function imprimirFichaPDF() {
+        console.log("Gerando PDF...");
+        const doc = new jsPDF();
+
+        doc.setFontSize(20);
+        doc.setTextColor(17, 153, 142);
+        doc.text("AuraGain - Ficha de Treino", 14, 22);
+
+        doc.setFontSize(12);
+        doc.setTextColor(0, 0, 0);
+        doc.text(`Treino: ${treino.titulo}`, 14, 32);
+        doc.text(`Aluno: ${nome}`, 14, 38);
+
+        const colunas = ["Exercício", "Séries", "Repetições", "Carga Registrada"];
+        const linhas = [];
+
+        treino.exercicios.forEach(item => {
+            const linha = [
+                item.exercicio.nome,
+                item.series,
+                item.repeticoesAlvo,
+                item.peso + "kg" ? `${pesos[item.id]} kg` : "---"
+            ];
+            linhas.push(linha);
+        });
+
+        autoTable(doc, {
+            startY: 45,
+            head: [colunas],
+            body: linhas,
+            theme: "striped",
+            headStyles: { fillColor: [17, 153, 142] },
+            styles: { fontSize: 11, cellPadding: 4 },
+        });
+
+        doc.save(`Ficha_Treino_${treino.titulo.replace(/\s+/g, '_')}.pdf`);
+    }
+
     function handleLogout() {
         localStorage.clear();
         navigate("/");
@@ -122,12 +162,20 @@ export default function IniciarTreino() {
                     }}>
                         {treino.titulo}
                     </h2>
-                        <h4 className="mb-0"style={{
-                            border: "2px solid black"
-                        }}>
-                             {String(minutos).padStart(2, "0")}:
-                            {String(segundosRestantes).padStart(2, "0")}
-                        </h4>
+
+                        <div className="d-flex align-items-center gap-3">
+                            <button
+                                className="btn btn-outline-success fw-bold"
+                                onClick={imprimirFichaPDF}
+                                title="Baixar PDF"
+                            >
+                                PDF
+                            </button>
+
+                            <h4 className="mb-0" style={{ border: "2px solid black", padding: "5px 10px", borderRadius: "8px" }}>
+                                {String(minutos).padStart(2, "0")}:{String(segundosRestantes).padStart(2, "0")}
+                            </h4>
+                        </div>
                     </div>
 
 
@@ -153,12 +201,12 @@ export default function IniciarTreino() {
                                     {realizados[item.id] ? "Realizado" : "○ Não realizado"}
                                 </button>
                                 {realizados && (
-                                    <div className="input-group mt-2" style={{ maxWidth: "180px" }}>
+                                    <div className="input-group mt-2 col-lg-6" style={{ maxWidth: "180px" }}>
 
                                         <input
                                             type="number"
                                             className="form-control"
-                                            placeholder="20"
+                                            placeholder={item.peso + " (anterior)"}
                                             disabled={realizados[item.id]}
                                             value={pesos[item.id] || ""}
                                             onChange={(e) =>
