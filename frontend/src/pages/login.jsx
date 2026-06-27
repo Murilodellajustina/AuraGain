@@ -34,6 +34,7 @@ export default function Login() {
         localStorage.setItem("token", data.token);
         localStorage.setItem("userName", data.nome);
         localStorage.setItem("userEmail", data.email);
+        localStorage.setItem("userPerfil", data.perfil || "ALUNO");
         navigate("/paginaInicial");
       } else {
         const errorData = await response.json();
@@ -109,6 +110,9 @@ export default function Login() {
             <p>
               Não tem uma conta? <Link to="/cadastro" className="text-success text-decoration-none fw-bold">Cadastre-se</Link>
             </p>
+            <small className="text-muted">
+               É Personal Trainer? <Link to="/cadastroPersonal" className="text-dark fw-bold text-decoration-underline">Entre aqui</Link>
+            </small>
           </div>
         </form>
       </div>

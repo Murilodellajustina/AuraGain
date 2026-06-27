@@ -108,7 +108,7 @@ export default function Sidebar({ children }) {
                     </li>
                     <hr className="text-secondary" />
                     <li className="nav-item mb-2">
-                        <Link to="#" className="nav-link text-dark custom-hover">
+                        <Link to="/areaPersonal" className="nav-link text-dark custom-hover">
                             Área do Personal
                         </Link>
                     </li>
