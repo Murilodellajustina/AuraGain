@@ -110,7 +110,9 @@ export default function PaginaInicial() {
                                     )}
                                 </div>
                                 {meusTreinos.length > 0 && (
+
                                     <div className="card-footer bg-white border-top-0 p-4 d-grid">
+                                        console.log(treinoAtual)
                                         <button className="btn btn-success btn-lg fw-bold shadow-sm rounded-3"
                                             onClick={() => navigate("/telaIniciarTreino",
                                                 {
