@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "tb_usuario")
@@ -31,10 +32,20 @@ public class Usuario {
     @Column(nullable = false, length = 20)
     private TipoPerfil perfil;
 
+    @Column(name = "foto_perfil", columnDefinition = "TEXT")
+    private String fotoPerfil;
+
+    @Column(length = 20)
+    private String cref;
+
+    @Column(columnDefinition = "TEXT")
+    private String biografia;
+
     @Column(name = "data_cadastro", updatable = false)
     private LocalDateTime dataCadastro;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Treino> treinos;
 
     @PrePersist

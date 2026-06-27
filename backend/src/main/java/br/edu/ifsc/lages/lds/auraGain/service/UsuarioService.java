@@ -35,7 +35,13 @@ public class UsuarioService {
         novoUsuario.setNome(dados.getNome());
         novoUsuario.setEmail(dados.getEmail());
         novoUsuario.setSenha(dados.getSenha());
-        novoUsuario.setPerfil(Usuario.TipoPerfil.ALUNO);
+        novoUsuario.setPerfil(dados.getPerfil() != null ? dados.getPerfil() : Usuario.TipoPerfil.ALUNO);
+
+        if (novoUsuario.getPerfil() == Usuario.TipoPerfil.PERSONAL) {
+            novoUsuario.setCref(dados.getCref());
+            novoUsuario.setBiografia(dados.getBiografia());
+            novoUsuario.setFotoPerfil(dados.getFotoPerfil());
+        }
         return usuarioRepository.save(novoUsuario);
     }
 }
