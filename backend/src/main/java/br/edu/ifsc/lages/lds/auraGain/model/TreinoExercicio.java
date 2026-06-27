@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TreinoExercicio {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,4 +30,15 @@ public class TreinoExercicio {
 
     @Column(name = "repeticoes_alvo", nullable = false)
     private Integer repeticoesAlvo;
+
+    @Column(name = "peso_kg")
+    private Integer peso = 0;
+
+    @PrePersist
+    @PreUpdate
+    public void definirPesoPadrao() {
+        if (peso == null) {
+            peso = 0;
+        }
+    }
 }
