@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,6 +59,27 @@ public class TreinoController {
             return ResponseEntity.ok(treinos);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Update Workout", description = "Updates an existing workout plan.")
+    @PutMapping("/{id}")
+    public ResponseEntity<?> atualizarTreino(@PathVariable Long id, @RequestBody TreinoRequestDTO dto) {
+        try {
+            return ResponseEntity.ok(treinoService.atualizarTreino(id, dto));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Delete Workout", description = "Deletes a workout routine.")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletarTreino(@PathVariable Long id) {
+        try {
+            treinoService.deletarTreino(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 }

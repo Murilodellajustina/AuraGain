@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import logo from "../imagens/logoAuraGain.png";
 import Sidebar from "../components/sideBar";
 import { useTranslation } from 'react-i18next';
+import useAtalhos from "../hooks/useAtalhos";
 
 export default function PaginaInicial() {
     const navigate = useNavigate();
@@ -62,6 +63,14 @@ export default function PaginaInicial() {
             .replace(/^_+|_+$/g, "");
     }
 
+    useAtalhos({
+        "Alt+M": () => setIsSidebarOpen(prev => !prev), 
+        "Alt+T": () => navigate("/telaCriarTreino"),
+        "Alt+P": () => navigate("/areaPersonal"),
+        "Alt+I": () => navigate("/telaIniciarTreino", {state: {treino: treinoAtual}}),
+        "Alt+S": () => handleLogout()                   
+    });
+
     return (
 
         <div className="container-fluid min-vh-100 bg-light text-dark p-0" style={{ overflowX: "hidden" }}>
@@ -98,7 +107,7 @@ export default function PaginaInicial() {
                                         <div className="text-center p-5 text-muted">
                                             <h5 className="fw-bold text-dark">{t("dash_sem_treino_titulo")}</h5>
                                             <p>{t("dash_sem_treino_desc")}</p>
-                                            <Link to="/telaCriarTreino" className="btn btn-success mt-2 fw-bold">{t("dash_sem_treino_btn")}</Link>
+                                            <Link to="/telaCriarTreino" className="btn btn-success mt-2 fw-bold" title="Alt+T">{t("dash_sem_treino_btn")}</Link>
                                         </div>
                                     ) : (
                                         <ul className="list-group list-group-flush fs-5">
@@ -123,7 +132,7 @@ export default function PaginaInicial() {
                                 {meusTreinos.length > 0 && (
 
                                     <div className="card-footer bg-white border-top-0 p-4 d-grid">
-                                        <button className="btn btn-success btn-lg fw-bold shadow-sm rounded-3"
+                                        <button className="btn btn-success btn-lg fw-bold shadow-sm rounded-3" title="Alt+I"
                                             onClick={() => navigate("/telaIniciarTreino",
                                                 {
                                                     state: {
@@ -146,7 +155,7 @@ export default function PaginaInicial() {
                                     </div>
                                     <div>
                                         <h6 className="card-title text-secondary mb-1">{t("dash_card_cadastrar")}</h6>
-                                        <button className="btn btn-sm btn-success btn-lg fw-bold rounded-3" onClick={() => navigate("/telaCriarTreino")} >{t("dash_btn_cadastrar")}</button>
+                                        <button className="btn btn-sm btn-success btn-lg fw-bold rounded-3" title="Alt+T" onClick={() => navigate("/telaCriarTreino")} >{t("dash_btn_cadastrar")}</button>
                                     </div>
                                 </div>
 
@@ -158,7 +167,7 @@ export default function PaginaInicial() {
 
                                         <div>
                                             <h6 className="card-title text-secondary mb-1">{t("dash_card_solicitar")}</h6>
-                                            <button className="btn btn-sm btn-success btn-lg fw-bold rounded-3" onClick={() => navigate("/areaPersonal")}>{t("dash_btn_solicitar")}</button>
+                                            <button className="btn btn-sm btn-success btn-lg fw-bold rounded-3" title="Alt+P" onClick={() => navigate("/areaPersonal")}>{t("dash_btn_solicitar")}</button>
                                         </div>
                                     </div>
                                 </div>

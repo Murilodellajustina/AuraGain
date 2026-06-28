@@ -41,4 +41,35 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @Operation(summary = "Get User Profile", description = "Retrieves a user's complete data.")
+    @GetMapping("/{email}")
+    public ResponseEntity<?> buscarPerfil(@PathVariable String email) {
+        try {
+            return ResponseEntity.ok(usuarioService.buscarPorEmail(email));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Update User", description = "Updates the user account data.")
+    @PutMapping("/{id}")
+    public ResponseEntity<?> atualizarUsuario(@PathVariable Long id, @RequestBody UsuarioRegistroDTO dto) {
+        try {
+            return ResponseEntity.ok(usuarioService.atualizarUsuario(id, dto));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Delete User", description = "Permanently deletes the user account.")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletarUsuario(@PathVariable Long id) {
+        try {
+            usuarioService.deletarUsuario(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 }
