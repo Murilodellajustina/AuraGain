@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from 'react-dom/client'
 import { createHashRouter, RouterProvider } from "react-router-dom";
+import './Services/i18n.js';
 
 import Login from './pages/login.jsx';
 import Cadastro from './pages/cadastro.jsx';
