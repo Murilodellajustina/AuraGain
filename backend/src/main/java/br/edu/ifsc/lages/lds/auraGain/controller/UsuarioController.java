@@ -8,16 +8,20 @@ import br.edu.ifsc.lages.lds.auraGain.dto.LoginRequestDTO;
 import br.edu.ifsc.lages.lds.auraGain.dto.UsuarioRegistroDTO;
 import br.edu.ifsc.lages.lds.auraGain.model.Usuario;
 import br.edu.ifsc.lages.lds.auraGain.service.UsuarioService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/usuarios")
 @CrossOrigin(origins = "*")
+@Tag(name = "User Management", description = "Endpoints for registering and authenticating Students and Personal Trainers.")
 public class UsuarioController {
     
     @Autowired
     private UsuarioService usuarioService;
 
     @PostMapping("/login")
+    @Operation(summary = "User Login", description = "Authenticates a user and returns their authorization token and basic profile data.")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequest) {
         try {
             Usuario usuario = usuarioService.autenticar(loginRequest.getEmail(), loginRequest.getSenha());
@@ -28,6 +32,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/cadastrar")
+    @Operation(summary = "Register User", description = "Registers a new user in the system. The profile can be ALUNO (Student) or PERSONAL (Trainer).")
     public ResponseEntity<?> cadastrar(@RequestBody UsuarioRegistroDTO registroRequest) {
         try {
             Usuario novoUsuario = usuarioService.cadastrar(registroRequest);

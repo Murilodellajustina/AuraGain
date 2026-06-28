@@ -60,7 +60,7 @@ export default function Sidebar({ children }) {
 
 
         <>
-            <nav className="navbar navbar-light bg-white border-bottom shadow-sm px-3 sticky-top">
+            <nav className="navbar navbar-light bg-white border-bottom shadow-sm px-3 pt-3 pb-3 sticky-top">
                 <div className="d-flex align-items-center">
                     <button
                         className="btn btn-light border-secondary me-3 d-flex align-items-center justify-content-center"

@@ -1,8 +1,12 @@
 package br.edu.ifsc.lages.lds.auraGain.dto;
 
-public class PesoDTO {
+import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(description = "Data Transfer Object for updating or recording user weight.")
+public class PesoDTO {
+    @Schema(description = "Unique identifier of the weight record or user.", example = "1")
     private Long id;
+    @Schema(description = "Body weight in kilograms.", example = "85")
     private Integer peso;
 
     public PesoDTO() {

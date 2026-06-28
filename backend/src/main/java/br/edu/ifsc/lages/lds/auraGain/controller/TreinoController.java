@@ -20,13 +20,17 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/treinos")
 @CrossOrigin(origins = "*")
+@Tag(name = "Workout Management", description = "Endpoints for creating and retrieving personalized workout routines.")
 public class TreinoController {
 
     @PutMapping("/pesos")
+    @Operation(summary = "Update Weights", description = "Updates the weight for the workout exercises")
     public ResponseEntity<?> atualizarPesos(@RequestBody List<PesoDTO> pesos) {
         treinoService.atualizarPesos(pesos);
         return ResponseEntity.ok().build();
@@ -36,6 +40,7 @@ public class TreinoController {
     private TreinoService treinoService;
 
     @PostMapping
+    @Operation(summary = "Create Workout Routine", description = "Registers a new workout routine with its associated exercises, sets, and reps for a specific user.")
     public ResponseEntity<?> cadastrarTreino(@RequestBody TreinoRequestDTO treinoRequest) {
         try {
             Treino treinoSalvo = treinoService.salvarTreinoCompleto(treinoRequest);
@@ -46,6 +51,7 @@ public class TreinoController {
     }
 
     @GetMapping("/usuario/{email}")
+    @Operation(summary = "Get Workouts by User", description = "Retrieves a list of all workout routines belonging to a specific user via their email.")
     public ResponseEntity<?> buscarTreinosPorUsuario(@PathVariable String email) {
         try {
             List<Treino> treinos = treinoService.buscarTreinosDoUsuario(email);
