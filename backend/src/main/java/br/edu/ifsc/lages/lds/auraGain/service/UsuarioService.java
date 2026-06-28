@@ -44,4 +44,32 @@ public class UsuarioService {
         }
         return usuarioRepository.save(novoUsuario);
     }
+
+    public Usuario buscarPorEmail(String email) throws Exception {
+        return usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new Exception("Usuário não encontrado."));
+    }
+
+    public Usuario atualizarUsuario(Long id, UsuarioRegistroDTO dto) throws Exception {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new Exception("Usuário não encontrado."));
+
+        usuario.setNome(dto.getNome());
+        
+        if (dto.getSenha() != null && !dto.getSenha().trim().isEmpty()) {
+            usuario.setSenha(dto.getSenha());
+        }
+
+        if (usuario.getPerfil() == Usuario.TipoPerfil.PERSONAL) {
+            usuario.setCref(dto.getCref());
+            usuario.setBiografia(dto.getBiografia());
+            usuario.setFotoPerfil(dto.getFotoPerfil());
+        }
+
+        return usuarioRepository.save(usuario);
+    }
+
+    public void deletarUsuario(Long id) {
+        usuarioRepository.deleteById(id);
+    }
 }

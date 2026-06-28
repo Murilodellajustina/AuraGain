@@ -11,6 +11,8 @@ import AreaPersonal from "./pages/areaPersonal.jsx";
 import CadastroPersonal from "./pages/cadastroPersonal.jsx";
 import TelaIniciarTreino from "./pages/telaIniciarTreino.jsx";
 import TelaCriarTreinoAluno from "./pages/telaCriarTreinoAluno.jsx";
+import Perfil from "./pages/perfil.jsx";
+import TelaEditarTreino from "./pages/telaEditarTreino.jsx";
 
 const router = createHashRouter([
   { path: "/", element: <Login /> },
@@ -20,7 +22,9 @@ const router = createHashRouter([
   { path: "/telaCriarTreino", element: <TelaCriarTreino />},
   { path: "/areaPersonal", element: <AreaPersonal />},
   { path: "/telaIniciarTreino", element: <TelaIniciarTreino />},
-  { path: "/telaCriarTreinoAluno", element: <TelaCriarTreinoAluno />}
+  { path: "/telaCriarTreinoAluno", element: <TelaCriarTreinoAluno />},
+  { path: "/perfil", element: <Perfil /> },
+  { path: "/telaEditarTreino", element: <TelaEditarTreino /> }
 ],
 );
 createRoot(document.getElementById("root")).render(

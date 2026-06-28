@@ -6,6 +6,7 @@ import Sidebar from "../components/sideBar";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { useTranslation } from 'react-i18next';
+import useAtalhos from "../hooks/useAtalhos";
 
 export default function IniciarTreino() {
 
@@ -37,7 +38,7 @@ export default function IniciarTreino() {
             setLetraInicial(nomeSalvo.charAt(0).toUpperCase());
             buscarTreinosDoBanco(emailSalvo);
         } else {
-            navigate("/Login");
+            navigate("/login");
         }
     }, [navigate]);
 
@@ -150,6 +151,12 @@ export default function IniciarTreino() {
             .replace(/[^a-z0-9]+/g, "_")
             .replace(/^_+|_+$/g, "");
 
+    useAtalhos({
+        "Alt+D": () => navigate("/paginaInicial"), 
+        "Alt+F": () => finalizarTreino(),
+        "Alt+I": () => imprimirFichaPDF()
+    });
+
     return (
         <Sidebar>
 
@@ -172,7 +179,7 @@ export default function IniciarTreino() {
 
                         <div className="d-flex align-items-center gap-3">
                             <button
-                                className="btn btn-outline-success fw-bold"
+                                className="btn btn-outline-success fw-bold" title="Alt+I"
                                 onClick={imprimirFichaPDF}
                                 title="Baixar PDF"
                             >
@@ -249,7 +256,7 @@ export default function IniciarTreino() {
                     </div>
 
                     <div className="card-footer bg-white border-top-0 p-4 d-grid">
-                        <button className="btn btn-success btn-lg fw-bold shadow-sm rounded-3" disabled={!treinoFinalizado}
+                        <button className="btn btn-success btn-lg fw-bold shadow-sm rounded-3" title="Alt+F" disabled={!treinoFinalizado}
                             onClick={finalizarTreino}>
                             {t("finalizar_treino")} {treino.titulo}
                         </button>

@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import logo from "../imagens/logoAuraGain.png"
 import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
+import useAtalhos from "../hooks/useAtalhos";
 
 export default function CadastroPersonal() {
     const navigate = useNavigate();
@@ -72,6 +73,11 @@ export default function CadastroPersonal() {
             setCarregando(false);
         }
     }
+
+    useAtalhos({
+        "Alt+L": () => navigate("/"),
+        "Alt+c": () => navigate("/cadastro")
+    });
 
     return (
             <div className="container-fluid vh-100 d-flex justify-content-center align-items-center"
@@ -194,8 +200,8 @@ export default function CadastroPersonal() {
                         </div>
     
                          <div className="text-center mt-4">
-                            <p className="mb-0">{t("cadastro_ja_tem_conta")} <Link to="/" className="text-success fw-bold text-decoration-none">{t("cadastro_faca_login")}</Link></p>
-                            <p className="mt-1"><Link to="/cadastro" className="text-muted text-decoration-underline">{t("cadastro_voltar_aluno")}</Link></p>
+                            <p className="mb-0">{t("cadastro_ja_tem_conta")} <Link to="/" className="text-success fw-bold text-decoration-none" title="Alt+L">{t("cadastro_faca_login")}</Link></p>
+                            <p className="mt-1"><Link to="/cadastro" className="text-muted text-decoration-underline" title="Alt+C">{t("cadastro_voltar_aluno")}</Link></p>
                         </div>
                     </form>
                 </div>

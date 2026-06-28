@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import logo from "../imagens/logoAuraGain.png"
 import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
+import useAtalhos from "../hooks/useAtalhos";
 
 export default function Cadastrar() {
     const { t } = useTranslation();
@@ -63,6 +64,10 @@ export default function Cadastrar() {
             setCarregando(false);
         }
     }
+
+    useAtalhos({
+        "Alt+L": () => navigate("/")
+    });
 
     return (
         <div className="container-fluid vh-100 d-flex justify-content-center align-items-center"
@@ -149,7 +154,7 @@ export default function Cadastrar() {
 
                     <div className="text-center mt-4">
                         <p>
-                            {t("cadastro_ja_tem_conta")} <Link to="/" className="text-success text-decoration-none fw-bold">{t("cadastro_faca_login")}</Link>
+                            {t("cadastro_ja_tem_conta")} <Link to="/" className="text-success text-decoration-none fw-bold" title="Alt+L">{t("cadastro_faca_login")}</Link>
                         </p>
                     </div>
                 </form>

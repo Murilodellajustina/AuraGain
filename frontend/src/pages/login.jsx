@@ -4,6 +4,7 @@ import logo from "../imagens/logoAuraGain.png"
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
+import useAtalhos from "../hooks/useAtalhos";
 
 export default function Login() {
   const { t } = useTranslation();
@@ -49,6 +50,11 @@ export default function Login() {
       setCarregando(false);
     }
   }
+
+  useAtalhos({
+    "Alt+C": () => navigate("/cadastro"),
+    "Alt+P": () => navigate("/cadastroPersonal")
+  });
 
   return (
     <div className="container-fluid vh-100 d-flex justify-content-center align-items-center "
@@ -110,10 +116,10 @@ export default function Login() {
           </div>
           <div className="text-center mt-3">
             <p>
-              {t("login_sem_conta")} <Link to="/cadastro" className="text-success text-decoration-none fw-bold">{t("login_cadastre_se")}</Link>
+              {t("login_sem_conta")} <Link to="/cadastro" className="text-success text-decoration-none fw-bold" title="Alt+C">{t("login_cadastre_se")}</Link>
             </p>
             <small className="text-muted">
-               {t("login_pergunta_personal")} <Link to="/cadastroPersonal" className="text-dark fw-bold text-decoration-underline">{t("login_entre_aqui")}</Link>
+               {t("login_pergunta_personal")} <Link to="/cadastroPersonal" className="text-dark fw-bold text-decoration-underline " title="Alt+P">{t("login_entre_aqui")}</Link>
             </small>
           </div>
         </form>

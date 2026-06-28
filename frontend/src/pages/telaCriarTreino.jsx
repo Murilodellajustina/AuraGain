@@ -6,6 +6,7 @@ import Select from 'react-select';
 import { listarExercicios } from "../Services/Api";
 import Sidebar from "../components/sideBar";
 import { useTranslation } from 'react-i18next';
+import useAtalhos from "../hooks/useAtalhos";
 
 export default function CadastrarTreino() {
     const { t } = useTranslation();
@@ -138,6 +139,13 @@ export default function CadastrarTreino() {
 
     ];
 
+    useAtalhos({
+        "Alt+M": () => setIsSidebarOpen(prev => !prev),
+        "Alt+D": () => navigate("/paginaInicial"), 
+        "Alt+N": () => adicionarNovaLinha(),       
+        "Alt+C": () => handleCadastrarTreino()     
+    });
+
     return (
         <div className="container-fluid min-vh-100 bg-light text-dark p-0" style={{
             backgroundColor: '#11998e',
@@ -218,12 +226,12 @@ export default function CadastrarTreino() {
                                             </div>
                                         ))}
                                     </ul>
-                                    <button className="btn btn-outline-success fw-bold shadow-sm rounded-3 " style={{ marginTop: '20px', marginLeft: '20px' }} onClick={adicionarNovaLinha}>
+                                    <button className="btn btn-outline-success fw-bold shadow-sm rounded-3 " title="Alt+N" style={{ marginTop: '20px', marginLeft: '20px' }} onClick={adicionarNovaLinha}>
                                         {t("criar_btn_adicionar")}
                                     </button>
                                 </div>
                                 <div className="card-footer bg-white border-top-0 p-4 d-grid">
-                                    <button className="btn btn-success btn-lg fw-bold shadow-sm rounded-3" onClick={handleCadastrarTreino}
+                                    <button className="btn btn-success btn-lg fw-bold shadow-sm rounded-3" title="Alt+C" onClick={handleCadastrarTreino}
                                         disabled={carregando}>
                                         {carregando ? t("criar_salvando") : t("dash_card_cadastrar")}
                                     </button>

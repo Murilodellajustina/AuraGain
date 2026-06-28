@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import logo from "../imagens/logoAuraGain.png";
 import Sidebar from "../components/sideBar";
 import { useTranslation } from 'react-i18next';
+import useAtalhos from "../hooks/useAtalhos";
 
 export default function AreaPersonal() {
     const { t } = useTranslation();
@@ -95,6 +96,13 @@ export default function AreaPersonal() {
     }
     const fallbackImage = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"; // Imagem padrão caso o personal não tenha foto
 
+    useAtalhos({
+        "Alt+M": () => setIsSidebarOpen(prev => !prev),
+        "Alt+D": () => navigate("/paginaInicial"),
+        "Alt+1": () => setAbaAtiva("PENDENTES"),
+        "Alt+2": () => setAbaAtiva("ALUNOS")     
+    });
+
     return (
         <div className="container-fluid min-vh-100 bg-light text-dark p-0" style={{ overflowX: "hidden" }}>
             <Sidebar>
@@ -142,14 +150,14 @@ export default function AreaPersonal() {
                                 <div className="card-header bg-white border-bottom p-0">
                                     <div className="d-flex">
                                         <button
-                                            className={`btn w-50 py-3 rounded-0 fw-bold border-0 ${abaAtiva === "PENDENTES" ? "btn-success" : "btn-light text-secondary"}`}
-                                            onClick={() => setAbaAtiva("PENDENTES")}
+                                            className= {`btn w-50 py-3 rounded-0 fw-bold border-0 ${abaAtiva === "PENDENTES" ? "btn-success" : "btn-light text-secondary"}`}
+                                            title="Alt+1" onClick={() => setAbaAtiva("PENDENTES")}
                                         >
                                             {t("area_novas_solicitacoes")} <span className="badge bg-danger ms-2">{pendentes.length}</span>
                                         </button>
                                         <button
                                             className={`btn w-50 py-3 rounded-0 fw-bold border-0 ${abaAtiva === "ALUNOS" ? "btn-success" : "btn-light text-secondary"}`}
-                                            onClick={() => setAbaAtiva("ALUNOS")}
+                                            title="Alt+2" onClick={() => setAbaAtiva("ALUNOS")}
                                         >
                                            {t("area_meus_alunos")} <span className="badge bg-success ms-2">{meusAlunos.length}</span>
                                         </button>

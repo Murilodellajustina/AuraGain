@@ -69,4 +69,33 @@ public class TreinoService {
             te.setPeso(dto.getPeso());
         }
     }
+
+    @Transactional
+    public Treino atualizarTreino(Long idTreino, TreinoRequestDTO dados) throws Exception {
+        Treino treino = treinoRepository.findById(idTreino)
+                .orElseThrow(() -> new Exception("Treino não encontrado."));
+
+        treino.setTitulo("Ficha " + dados.getDiaFicha());
+
+        treino.getExercicios().clear();
+
+        for (ItemTreinoDTO item : dados.getExercicios()) {
+            Exercicio exercicio = exercicioRepository.findById(item.getExercicioId())
+                    .orElseThrow(() -> new Exception("Exercício ID " + item.getExercicioId() + " não existe."));
+
+            TreinoExercicio treinoExercicio = new TreinoExercicio();
+            treinoExercicio.setTreino(treino);
+            treinoExercicio.setExercicio(exercicio);
+            treinoExercicio.setSeries(item.getSeries());
+            treinoExercicio.setRepeticoesAlvo(item.getRepeticoes());
+            
+            treino.getExercicios().add(treinoExercicio);
+        }
+
+        return treinoRepository.save(treino);
+    }
+
+    public void deletarTreino(Long idTreino) {
+        treinoRepository.deleteById(idTreino);
+    }
 }

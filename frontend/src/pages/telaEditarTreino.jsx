@@ -1,59 +1,115 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import logo from "../imagens/logoAuraGain.png";
 import Select from 'react-select';
 import { listarExercicios } from "../Services/Api";
 import Sidebar from "../components/sideBar";
 import { useTranslation } from 'react-i18next';
 import useAtalhos from "../hooks/useAtalhos";
 
-export default function CadastrarTreinoAluno() {
-    const navigate = useNavigate();
-    const location = useLocation();
+export default function EditarTreino() {
     const { t } = useTranslation();
+    const navigate = useNavigate();
+    const location = useLocation(); 
+    
+    const treinoExistente = location.state?.treino;
+    
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [opcaoSelecionada, setOpcaoSelecionada] = useState(null);
 
-    const [nome, setNome] = useState("Visitante");
-    const [letraInicial, setLetraInicial] = useState("V");
     const [email, setEmail] = useState("");
     const [exercicios, setExercicios] = useState([]);
     const [carregando, setCarregando] = useState(false);
 
-    const emailDoAluno = location.state?.emailAluno;
-    const nomeDoAluno = location.state?.nomeAluno;
-
-    const [linhasExercicios, setLinhasExercicios] = useState([{ id: Date.now(), exercicioId: null, series: '', repeticoes: '' }]);
+    const [linhasExercicios, setLinhasExercicios] = useState([]);
 
     useEffect(() => {
-        const nomeSalvo = localStorage.getItem("userName");
+        if (!treinoExistente) {
+            navigate("/paginaInicial");
+            return;
+        }
+
         const emailSalvo = localStorage.getItem("userEmail");
-        if (nomeSalvo) {
-            setNome(nomeSalvo.split(" ")[0]);
-            setLetraInicial(nomeSalvo.charAt(0).toUpperCase());
+        if (emailSalvo) {
             setEmail(emailSalvo);
         } else {
-            navigate("/Login");
+            navigate("/");
+            return;
         }
 
         async function carregarExercicio() {
             try {
                 const dados = await listarExercicios();
-                console.log(dados);
                 setExercicios(dados);
             } catch (erro) {
-                console.error(erro)
+                console.error("Erro ao carregar exercícios:", erro);
             }
         }
-
         carregarExercicio();
-    }, [navigate]);
+        
+        const tituloOriginal = treinoExistente.titulo || "";
+        const letra = tituloOriginal.replace("Ficha ", "");
+        setOpcaoSelecionada({ value: letra, label: `Ficha ${letra}` });
+        
+        if (treinoExistente.exercicios && treinoExistente.exercicios.length > 0) {
+            const linhasCarregadas = treinoExistente.exercicios.map(ex => ({
+                id: ex.id || Date.now() + Math.random(),
+                exercicioId: ex.exercicio?.id || null,
+                series: ex.series || '',
+                repeticoes: ex.repeticoesAlvo || ''
+            }));
+            setLinhasExercicios(linhasCarregadas);
+        } else {
+            setLinhasExercicios([{ id: Date.now(), exercicioId: null, series: '', repeticoes: '' }]);
+        }
+    }, [navigate, treinoExistente]);
 
-    function handleLogout() {
-        localStorage.clear();
-        navigate("/");
-    }
+    const handleSalvarEdicao = async () => {
+        if (!opcaoSelecionada) {
+            alert(t("criar_alerta_selecione_dia") || "Selecione o dia da ficha.");
+            return;
+        }
+
+        const exerciciosValidos = linhasExercicios.filter(linha => linha.exercicioId && linha.series && linha.repeticoes);
+        
+        if (exerciciosValidos.length === 0 || exerciciosValidos.length !== linhasExercicios.length) {
+            alert(t("criar_alerta_preencher_campos") || "Preencha todos os campos do exercício.");
+            return;
+        }
+
+        setCarregando(true);
+
+        const payload = {
+            diaFicha: opcaoSelecionada.value,
+            emailUsuario: email, 
+            exercicios: exerciciosValidos.map(linha => ({
+                exercicioId: linha.exercicioId,
+                series: parseInt(linha.series),
+                repeticoes: parseInt(linha.repeticoes)
+            }))
+        };
+
+        try {
+            const resposta = await fetch(`http://localhost:8080/api/treinos/${treinoExistente.id}`, { 
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+
+            if (resposta.ok) {
+                alert(t("criar_alerta_sucesso") || "Treino atualizado com sucesso!");
+                navigate("/perfil"); 
+            } else {
+                const erroMsg = await resposta.text();
+                alert("Erro: " + erroMsg);
+            }
+        } catch (error) {
+            alert(t("cadastro_erro_servidor") || "Erro de conexão com o servidor.");
+            console.error(error);
+        } finally {
+            setCarregando(false);
+        }
+    };
 
     const adicionarNovaLinha = () => {
         setLinhasExercicios([...linhasExercicios, { id: Date.now(), exercicioId: null, series: '', repeticoes: '' }]);
@@ -73,60 +129,6 @@ export default function CadastrarTreinoAluno() {
         }
     };
 
-    const handleCadastrarTreinoAluno = async (emailUsuario) => {
-        if (!opcaoSelecionada) {
-            alert(t("criar_alerta_selecione_dia"));
-            return;
-        }
-
-        if (!emailDoAluno) {
-            alert(t("erro_email_aluno_nao_encontrado"));
-            return;
-        }
-
-        const exerciciosValidos = linhasExercicios.filter(linha => linha.exercicioId && linha.series && linha.repeticoes);
-        if (exerciciosValidos.length === 0 || exerciciosValidos.length !== linhasExercicios.length) {
-            alert(t("criar_alerta_preencher_campos"));
-            return;
-        }
-
-        setCarregando(true);
-
-        const payload = {
-            diaFicha: opcaoSelecionada.value,
-            emailUsuario: emailDoAluno,
-            exercicios: exerciciosValidos.map(linha => ({
-                exercicioId: linha.exercicioId,
-                series: parseInt(linha.series),
-                repeticoes: parseInt(linha.repeticoes)
-            }))
-        };
-
-        try {
-            const resposta = await fetch("http://localhost:8080/api/treinos", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(payload)
-            });
-
-            if (resposta.ok) {
-                alert(t("criar_alerta_sucesso"));
-                setOpcaoSelecionada(null);
-                setLinhasExercicios([{ id: Date.now(), exercicioId: null, series: '', repeticoes: '' }]);
-            } else {
-                const erroMsg = await resposta.text();
-                alert(erroMsg);
-            }
-        } catch (error) {
-            alert(t("cadastro_erro_servidor"));
-            console.error(error);
-        } finally {
-            setCarregando(false);
-        }
-    };
-
     const toTranslationKey = (text) =>
         text
             .toLowerCase()
@@ -135,89 +137,88 @@ export default function CadastrarTreinoAluno() {
 
     const opcoesExercicios = exercicios.map(exercicio => ({
         value: exercicio.id,
-        label: t(toTranslationKey(exercicio.nome))
+        label: t(toTranslationKey(exercicio.nome)) || exercicio.nome
     }));
 
     const opcoesDias = [
-        { value: 'A', label: t("criar_ficha_a") },
-        { value: 'B', label: t("criar_ficha_b") },
-        { value: 'C', label: t("criar_ficha_c") },
-        { value: 'D', label: t("criar_ficha_d") },
-        { value: 'E', label: t("criar_ficha_e") },
-        { value: 'F', label: t("criar_ficha_f") },
-
+        { value: 'A', label: t("criar_ficha_a") || 'Ficha A' },
+        { value: 'B', label: t("criar_ficha_b") || 'Ficha B' },
+        { value: 'C', label: t("criar_ficha_c") || 'Ficha C' },
+        { value: 'D', label: t("criar_ficha_d") || 'Ficha D' },
+        { value: 'E', label: t("criar_ficha_e") || 'Ficha E' },
+        { value: 'F', label: t("criar_ficha_f") || 'Ficha F' },
     ];
-    
+
     useAtalhos({
-            "Alt+M": () => setIsSidebarOpen(prev => !prev),
-            "Alt+D": () => navigate("/paginaInicial"), 
-            "Alt+N": () => adicionarNovaLinha(),       
-            "Alt+C": () => handleCadastrarTreino()     
+        "Alt+M": () => setIsSidebarOpen(prev => !prev),
+        "Alt+D": () => navigate("/paginaInicial"), 
+        "Alt+N": () => adicionarNovaLinha(),       
+        "Alt+C": () => handleSalvarEdicao()     
     });
 
     return (
-        <div className="container-fluid min-vh-100 bg-light text-dark p-0"
-            style={{
-                backgroundColor: '#11998e',
-                backgroundImage: 'linear-gradient(to right, #9df6b3, #fdfffe, #9df6b3)',
-                overflowX: 'hidden'
-            }}>
-
+        <div className="container-fluid min-vh-100 bg-light text-dark p-0" style={{
+            backgroundColor: '#11998e',
+            backgroundImage: 'linear-gradient(to right, #fdfffe, #d6ffe0, #fdfffe)',
+            overflowX: 'hidden'
+        }}>
             <Sidebar>
                 <div className="container mt-4 mb-5">
-
                     <div className="row gx-4">
-
                         <div className="col-lg-12 mb-4">
                             <div className="card bg-white border-0 shadow-sm h-100 rounded-4 overflow-hidden">
+                                
                                 <div className="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
-                                    <h4 className="mb-0 text-success fw-bold">{t("montar_treino_de")} {nomeDoAluno || t("aluno_padrao")}</h4>
+                                    <h4 className="mb-0 text-success fw-bold">✏️ Editar Ficha de Treino</h4>
                                 </div>
+                                
                                 <div className="card-body p-0">
                                     <ul className="list-group list-group-flush fs-5">
-                                        <div className="col-lg-z d-flex " style={{ marginLeft: '20px' }}>
+                                        <div className="col-lg-4 d-flex mt-3" style={{ marginLeft: '20px' }}>
                                             <Select
                                                 value={opcaoSelecionada}
                                                 onChange={setOpcaoSelecionada}
                                                 options={opcoesDias}
                                                 isSearchable={true}
                                                 placeholder={t("criar_selecione_ficha")}
-                                                noOptionsMessage={() => { t("criar_nenhum_resultado") }}
+                                                noOptionsMessage={() => t("criar_nenhum_resultado")}
                                             />
                                         </div>
-
-
                                     </ul>
                                 </div>
+                                
                                 <div className="card-body p-0 ">
                                     <ul className="list-group list-group-flush fs-5">
-                                        {linhasExercicios.map((linha, index) => (
+                                        {linhasExercicios.map((linha) => (
                                             <div key={linha.id} className="d-flex align-items-center mt-3" style={{ marginTop: '20px', marginLeft: '20px' }}>
+                                                
                                                 <div className="flex-grow-1">
                                                     <Select
                                                         options={opcoesExercicios}
-                                                        placeholder="Selecione um exercício"
-                                                        noOptionsMessage={() => "Nenhum resultado encontrado"}
+                                                        placeholder={t("criar_selecione_exercicio")}
+                                                        noOptionsMessage={() => t("criar_nenhum_resultado")}
                                                         value={opcoesExercicios.find(op => op.value === linha.exercicioId) || null}
                                                         onChange={(opcao) => handleLinhaChange(linha.id, 'exercicioId', opcao ? opcao.value : null)}
                                                     />
                                                 </div>
+                                                
                                                 <div className="ms-3">
                                                     <input
                                                         type="number"
                                                         className="form-control"
-                                                        placeholder={t("criar_label_series")}
+                                                        placeholder={t("criar_label_series") || "Séries"}
                                                         min="1"
                                                         style={{ width: '130px' }}
                                                         value={linha.series}
                                                         onChange={(e) => handleLinhaChange(linha.id, 'series', e.target.value)}
                                                     />
                                                 </div>
+                                                
                                                 <div className="ms-3">
                                                     <input
                                                         type="number"
                                                         className="form-control"
-                                                        placeholder={t("criar_label_reps")}
+                                                        placeholder={t("criar_label_reps") || "Repetições"}
                                                         min="1"
                                                         style={{ width: '130px' }}
                                                         value={linha.repeticoes}
@@ -226,33 +227,33 @@ export default function CadastrarTreinoAluno() {
                                                 </div>
 
                                                 {linhasExercicios.length > 1 && (
-                                                    <div className="ms-3">
+                                                    <div className="ms-3 me-3">
                                                         <button className="btn btn-outline-danger" onClick={() => removerLinha(linha.id)}>
                                                             X
                                                         </button>
                                                     </div>
                                                 )}
-
+                                                
                                             </div>
                                         ))}
                                     </ul>
+                                    
                                     <button className="btn btn-outline-success fw-bold shadow-sm rounded-3 " title="Alt+N" style={{ marginTop: '20px', marginLeft: '20px' }} onClick={adicionarNovaLinha}>
-                                        {t("criar_btn_adicionar")}
+                                        {t("criar_btn_adicionar") || "+ Adicionar Exercício"}
                                     </button>
                                 </div>
+                                
                                 <div className="card-footer bg-white border-top-0 p-4 d-grid">
-                                    <button className="btn btn-success btn-lg fw-bold shadow-sm rounded-3" title="Alt+C" onClick={handleCadastrarTreinoAluno}
-                                        disabled={carregando}>
-                                        {carregando ? t("criar_salvando") : t("dash_card_cadastrar")}
+                                    <button className="btn btn-success btn-lg fw-bold shadow-sm rounded-3" title="Alt+C" onClick={handleSalvarEdicao} disabled={carregando}>
+                                        {carregando ? t("criar_salvando") : "Guardar Alterações do Treino"}
                                     </button>
                                 </div>
+                                
                             </div>
                         </div>
-
                     </div>
                 </div>
-            </Sidebar >
+            </Sidebar>
         </div>
-
     );
 }
