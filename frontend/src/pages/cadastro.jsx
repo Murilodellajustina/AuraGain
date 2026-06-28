@@ -2,8 +2,10 @@ import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import logo from "../imagens/logoAuraGain.png"
 import { useNavigate, Link } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 export default function Cadastrar() {
+    const { t } = useTranslation();
     const [nome, setNome] = useState("");
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
@@ -20,17 +22,17 @@ export default function Cadastrar() {
         setSucesso("");
 
         if (!nome || !email || !senha || !confirmarSenha) {
-            setErro("Por favor, preencha todos os campos");
+            setErro(t("cadastro_erro_preencher_campos"));
             return;
         }
 
         if(senha !== confirmarSenha) {
-            setErro("As senhas não coincidem");
+            setErro(t("cadastro_erro_senhas_nao_coincidem"));
             return;
         }
 
         if (senha.length < 6) {
-            setErro("A senha deve ter no mínimo 6 caracteres");
+            setErro(t("cadastro_erro_senha_curta"));
             return;
         }
 
@@ -44,18 +46,18 @@ export default function Cadastrar() {
             });
 
             if (resposta.ok) {
-                setSucesso("Cadastro realizado com sucesso!");
+                setSucesso(t("cadastro_sucesso"));
 
             setTimeout(() => {
                 navigate("/Login");
             }, 2000);
             } else {
                 const data = await resposta.json();
-                setErro(data.mensagem || "Erro ao cadastrar");
+                setErro(data.mensagem || t("cadastro_erro_servidor"));
             }
 
         } catch (err) {
-            setErro("Dados inseridos incorretamente");
+            setErro(t("cadastro_erro_dados_incorretos"));
             console.error(err);
         } finally {
             setCarregando(false);
@@ -79,19 +81,19 @@ export default function Cadastrar() {
                     className="mx-auto d-block mb-4"
                     style={{ width: "300px" }}
                 />
-                <h2 className="text-center mb-4">Crie sua conta</h2>
+                <h2 className="text-center mb-4">{t("cadastro_titulo")}</h2>
 
                 {erro && <div className="alert alert-danger">{erro}</div>}
                 {sucesso && <div className="alert alert-success">{sucesso}</div>}
 
                 <form onSubmit={handleCadastrar}>
                     <div className="mb-3">
-                        <label className="form-label">Nome</label>
+                        <label className="form-label">{t("cadastro_label_nome")}</label>
 
                         <input
                             type="nome"
                             className="form-control"
-                            placeholder="Digite seu nome"
+                            placeholder={t("cadastro_placeholder_nome")}
                             value={nome}
                             onChange={(e) => setNome(e.target.value)}
                             disabled={carregando || sucesso}
@@ -99,12 +101,12 @@ export default function Cadastrar() {
                     </div>
 
                     <div className="mb-3">
-                        <label className="form-label">Email</label>
+                        <label className="form-label">{t("login_email_label")}</label>
 
                         <input
                             type="email"
                             className="form-control"
-                            placeholder="nome@exemplo.com"
+                            placeholder={t("login_email_placeholder")}
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             disabled={carregando || sucesso}
@@ -112,7 +114,7 @@ export default function Cadastrar() {
                     </div>
 
                     <div className="mb-3">
-                        <label className="form-label">Senha</label>
+                        <label className="form-label">{t("login_senha_label")}</label>
 
                         <input
                             type="password"
@@ -125,7 +127,7 @@ export default function Cadastrar() {
                     </div>
 
                     <div className="mb-3">
-                        <label className="form-label">Confirmar Senha</label>
+                        <label className="form-label">{t("cadastro_label_confirmar_senha")}</label>
 
                         <input
                             type="password"
@@ -139,7 +141,7 @@ export default function Cadastrar() {
 
                     <div className="d-grid">
                         <button className="btn btn-success" type="submit" disabled={carregando || sucesso}>
-                            {carregando ? "Cadastrando..." : "Cadastrar"}
+                            {carregando ? "Cadastrando..." : t("dash_btn_cadastrar")}
                         </button>
                     </div>
                     <div className="text-center mt-3">
@@ -147,7 +149,7 @@ export default function Cadastrar() {
 
                     <div className="text-center mt-4">
                         <p>
-                            Já tem uma conta? <Link to="/" className="text-success text-decoration-none fw-bold">Faça Login</Link>
+                            {t("cadastro_ja_tem_conta")} <Link to="/" className="text-success text-decoration-none fw-bold">{t("cadastro_faca_login")}</Link>
                         </p>
                     </div>
                 </form>

@@ -5,11 +5,12 @@ import logo from "../imagens/logoAuraGain.png";
 import Select from 'react-select';
 import { listarExercicios } from "../Services/Api";
 import Sidebar from "../components/sideBar";
+import { useTranslation } from 'react-i18next';
 
 export default function CadastrarTreinoAluno() {
     const navigate = useNavigate();
     const location = useLocation();
-
+    const { t } = useTranslation();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [opcaoSelecionada, setOpcaoSelecionada] = useState(null);
 
@@ -73,18 +74,18 @@ export default function CadastrarTreinoAluno() {
 
     const handleCadastrarTreinoAluno = async (emailUsuario) => {
         if (!opcaoSelecionada) {
-            alert("Por favor, selecione o dia da ficha (ex: SEGUNDA).");
+            alert(t("criar_alerta_selecione_dia"));
             return;
         }
 
         if (!emailDoAluno) {
-            alert("Erro: O email do aluno não foi encontrado. Volte à listagem e tente novamente.");
+            alert(t("erro_email_aluno_nao_encontrado"));
             return;
         }
 
         const exerciciosValidos = linhasExercicios.filter(linha => linha.exercicioId && linha.series && linha.repeticoes);
         if (exerciciosValidos.length === 0 || exerciciosValidos.length !== linhasExercicios.length) {
-            alert("Por favor, preencha todos os campos (Exercício, Séries e Repetições) nas linhas criadas.");
+            alert(t("criar_alerta_preencher_campos"));
             return;
         }
 
@@ -100,8 +101,6 @@ export default function CadastrarTreinoAluno() {
             }))
         };
 
-        console.log("Payload sendo enviado para o Spring Boot:", JSON.stringify(payload, null, 2));
-
         try {
             const resposta = await fetch("http://localhost:8080/api/treinos", {
                 method: "POST",
@@ -112,38 +111,49 @@ export default function CadastrarTreinoAluno() {
             });
 
             if (resposta.ok) {
-                alert("Treino cadastrado com sucesso!");
+                alert(t("criar_alerta_sucesso"));
                 setOpcaoSelecionada(null);
                 setLinhasExercicios([{ id: Date.now(), exercicioId: null, series: '', repeticoes: '' }]);
             } else {
                 const erroMsg = await resposta.text();
-                alert("Erro ao salvar: " + erroMsg);
+                alert(erroMsg);
             }
         } catch (error) {
-            alert("Erro de conexão com o servidor.");
+            alert(t("cadastro_erro_servidor"));
             console.error(error);
         } finally {
             setCarregando(false);
         }
     };
 
+    const toTranslationKey = (text) =>
+        text
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "_")
+            .replace(/^_+|_+$/g, "");
+
     const opcoesExercicios = exercicios.map(exercicio => ({
         value: exercicio.id,
-        label: exercicio.nome
+        label: t(toTranslationKey(exercicio.nome))
     }));
 
     const opcoesDias = [
-        { value: 'A', label: 'FICHA A' },
-        { value: 'B', label: 'FICHA B' },
-        { value: 'C', label: 'FICHA C' },
-        { value: 'D', label: 'FICHA D' },
-        { value: 'E', label: 'FICHA E' },
-        { value: 'F', label: 'FICHA F' },
+        { value: 'A', label: t("criar_ficha_a") },
+        { value: 'B', label: t("criar_ficha_b") },
+        { value: 'C', label: t("criar_ficha_c") },
+        { value: 'D', label: t("criar_ficha_d") },
+        { value: 'E', label: t("criar_ficha_e") },
+        { value: 'F', label: t("criar_ficha_f") },
 
     ];
 
     return (
-        <div className="container-fluid min-vh-100 bg-light text-dark p-0" style={{ overflowX: "hidden" }}>
+        <div className="container-fluid min-vh-100 bg-light text-dark p-0"
+            style={{
+                backgroundColor: '#11998e',
+                backgroundImage: 'linear-gradient(to right, #9df6b3, #fdfffe, #9df6b3)',
+                overflowX: 'hidden'
+            }}>
 
             <Sidebar>
                 <div className="container mt-4 mb-5">
@@ -153,7 +163,7 @@ export default function CadastrarTreinoAluno() {
                         <div className="col-lg-12 mb-4">
                             <div className="card bg-white border-0 shadow-sm h-100 rounded-4 overflow-hidden">
                                 <div className="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
-                                    <h4 className="mb-0 text-success fw-bold">Montar treino de {nomeDoAluno || "Aluno"}</h4>
+                                    <h4 className="mb-0 text-success fw-bold">{t("montar_treino_de")} {nomeDoAluno || t("aluno_padrao")}</h4>
                                 </div>
                                 <div className="card-body p-0">
                                     <ul className="list-group list-group-flush fs-5">
@@ -163,8 +173,8 @@ export default function CadastrarTreinoAluno() {
                                                 onChange={setOpcaoSelecionada}
                                                 options={opcoesDias}
                                                 isSearchable={true}
-                                                placeholder="Selecione a ficha"
-                                                noOptionsMessage={() => "Nenhum resultado encontrado"}
+                                                placeholder={t("criar_selecione_ficha")}
+                                                noOptionsMessage={() => { t("criar_nenhum_resultado") }}
                                             />
                                         </div>
 
@@ -188,7 +198,7 @@ export default function CadastrarTreinoAluno() {
                                                     <input
                                                         type="number"
                                                         className="form-control"
-                                                        placeholder="Séries (ex: 3)"
+                                                        placeholder={t("criar_label_series")}
                                                         min="1"
                                                         style={{ width: '130px' }}
                                                         value={linha.series}
@@ -199,7 +209,7 @@ export default function CadastrarTreinoAluno() {
                                                     <input
                                                         type="number"
                                                         className="form-control"
-                                                        placeholder="Reps (ex: 12)"
+                                                        placeholder={t("criar_label_reps")}
                                                         min="1"
                                                         style={{ width: '130px' }}
                                                         value={linha.repeticoes}
@@ -219,13 +229,13 @@ export default function CadastrarTreinoAluno() {
                                         ))}
                                     </ul>
                                     <button className="btn btn-outline-success fw-bold shadow-sm rounded-3 " style={{ marginTop: '20px', marginLeft: '20px' }} onClick={adicionarNovaLinha}>
-                                        Adicionar exercicio
+                                        {t("criar_btn_adicionar")}
                                     </button>
                                 </div>
                                 <div className="card-footer bg-white border-top-0 p-4 d-grid">
                                     <button className="btn btn-success btn-lg fw-bold shadow-sm rounded-3" onClick={handleCadastrarTreinoAluno}
                                         disabled={carregando}>
-                                        {carregando ? "Salvando..." : "Cadastrar Treino"}
+                                        {carregando ? t("criar_salvando") : t("dash_card_cadastrar")}
                                     </button>
                                 </div>
                             </div>

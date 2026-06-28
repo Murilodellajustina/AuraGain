@@ -5,11 +5,12 @@ import { listarExercicios } from "../Services/Api";
 import Sidebar from "../components/sideBar";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { useTranslation } from 'react-i18next';
 
 export default function IniciarTreino() {
 
     const location = useLocation();
-
+    const { t } = useTranslation();
     const treino = location.state?.treino;
 
     const navigate = useNavigate();
@@ -57,29 +58,29 @@ export default function IniciarTreino() {
 
                 setMeusTreinos(dados);
             } else {
-                console.error("Erro ao buscar treinos.");
+                console.error(t("erro_buscar_treinos"));
             }
         } catch (erro) {
-            console.error("Erro de conexão com o banco:", erro);
+            console.error(t("erro_conexao_banco"), erro);
         } finally {
             setCarregandoTreinos(false);
         }
     }
 
     async function imprimirFichaPDF() {
-        console.log("Gerando PDF...");
+        console.log(t("gerando_pdf"));
         const doc = new jsPDF();
 
         doc.setFontSize(20);
         doc.setTextColor(17, 153, 142);
-        doc.text("AuraGain - Ficha de Treino", 14, 22);
+        doc.text(t("pdf_titulo_auragain"), 14, 22);
 
         doc.setFontSize(12);
         doc.setTextColor(0, 0, 0);
-        doc.text(`Treino: ${treino.titulo}`, 14, 32);
-        doc.text(`Aluno: ${nome}`, 14, 38);
+        doc.text(`${t("treino")}: ${treino.titulo}`, 14, 32);
+        doc.text(`${t("aluno_padrao")}: ${nome}`, 14, 38);
 
-        const colunas = ["Exercício", "Séries", "Repetições", "Carga Registrada"];
+        const colunas = [t("exercicio"), t("series"), t("repeticoes"), t("carga_registrada")];
         const linhas = [];
 
         treino.exercicios.forEach(item => {
@@ -101,7 +102,7 @@ export default function IniciarTreino() {
             styles: { fontSize: 11, cellPadding: 4 },
         });
 
-        doc.save(`Ficha_Treino_${treino.titulo.replace(/\s+/g, '_')}.pdf`);
+        doc.save(`${t("pdf_nome_arquivo")}${treino.titulo.replace(/\s+/g, '_')}.pdf`);
     }
 
     function handleLogout() {
@@ -142,6 +143,12 @@ export default function IniciarTreino() {
 
 
     const treinoAtual = meusTreinos.length > 0 ? meusTreinos[indiceTreinoAtivo] : null;
+
+        const toTranslationKey = (text) =>
+        text
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "_")
+            .replace(/^_+|_+$/g, "");
 
     return (
         <Sidebar>
@@ -186,9 +193,9 @@ export default function IniciarTreino() {
                                 }`}
                         >
                             <div className="card-body  d-flex justify-content-between align-items-center">
-                                <h5>{item.exercicio.nome}</h5>
+                                <h5>{t(toTranslationKey(item.exercicio.nome))}</h5>
                                 <p>
-                                    {item.series} séries × {item.repeticoesAlvo} repetições
+                                    {item.series} {t("series")} × {item.repeticoesAlvo} {t("repeticoes")}
                                 </p>
                                 <button
                                     className={`btn ${realizados[item.id]
@@ -198,7 +205,7 @@ export default function IniciarTreino() {
                                     onClick={() => alternarRealizado(item.id)}
 
                                 >
-                                    {realizados[item.id] ? "Realizado" : "○ Não realizado"}
+                                    {realizados[item.id] ? t("status_realizado") : t("status_nao_realizado")}
                                 </button>
                                 {realizados && (
                                     <div className="input-group mt-2 col-lg-6" style={{ maxWidth: "180px" }}>
@@ -206,7 +213,7 @@ export default function IniciarTreino() {
                                         <input
                                             type="number"
                                             className="form-control"
-                                            placeholder={item.peso + " (anterior)"}
+                                            placeholder={item.peso + t("label_anterior")}
                                             disabled={realizados[item.id]}
                                             value={pesos[item.id] || ""}
                                             onChange={(e) =>
@@ -229,7 +236,7 @@ export default function IniciarTreino() {
 
                     <div className="mb-4">
                         <div className="d-flex justify-content-between">
-                            <span>Progresso</span>
+                            <span>{t("progresso")}</span>
                             <span>{concluidos}/{treino.exercicios.length}</span>
                         </div>
 
@@ -244,7 +251,7 @@ export default function IniciarTreino() {
                     <div className="card-footer bg-white border-top-0 p-4 d-grid">
                         <button className="btn btn-success btn-lg fw-bold shadow-sm rounded-3" disabled={!treinoFinalizado}
                             onClick={finalizarTreino}>
-                            Finalizar treino {treino.titulo}
+                            {t("finalizar_treino")} {treino.titulo}
                         </button>
                     </div>
 

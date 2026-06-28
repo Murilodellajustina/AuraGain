@@ -2,9 +2,11 @@ import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import logo from "../imagens/logoAuraGain.png"
 import { useNavigate, Link } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 export default function CadastroPersonal() {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     
     const [nome, setNome] = useState("");
     const [email, setEmail] = useState("");
@@ -24,17 +26,17 @@ export default function CadastroPersonal() {
         setSucesso("");
 
         if (!nome || !email || !senha || !cref || !confirmarSenha) {
-            setErro("Preencha todos os campos obrigatórios, incluindo o CREF.");
+            setErro(t("cadastro_erro_preencher_campos"));
             return;
         }
 
         if(senha !== confirmarSenha) {
-            setErro("As senhas não coincidem");
+            setErro(t("cadastro_erro_senhas_nao_coincidem"));
             return;
         }
 
         if (senha.length < 6) {
-            setErro("A senha deve ter no mínimo 6 caracteres");
+            setErro(t("cadastro_erro_senha_curta"));
             return;
         }
 
@@ -58,14 +60,14 @@ export default function CadastroPersonal() {
             });
 
             if (response.ok) {
-                alert("Cadastro profissional aprovado! Faça seu login.");
+                alert(t("cadastro_sucesso"));
                 navigate("/");
             } else {
                 const errorMsg = await response.text();
-                setErro("Erro: " + errorMsg);
+                setErro(t("cadastro_erro_servidor"));
             }
         } catch (err) {
-            setErro("Erro de conexão com o servidor.");
+            setErro(t("cadastro_erro_servidor"));
         } finally {
             setCarregando(false);
         }
@@ -88,19 +90,19 @@ export default function CadastroPersonal() {
                         className="mx-auto d-block mb-4"
                         style={{ width: "300px" }}
                     />
-                    <h2 className="text-center mb-4">Crie sua conta</h2>
+                    <h2 className="text-center mb-4">{t("cadastro_titulo")}</h2>
     
                     {erro && <div className="alert alert-danger">{erro}</div>}
                     {sucesso && <div className="alert alert-success">{sucesso}</div>}
     
                     <form onSubmit={handleCadastro}>
                         <div className="mb-3">
-                            <label className="form-label">Nome</label>
+                            <label className="form-label">{t("cadastro_label_nome")}</label>
     
                             <input
                                 type="nome"
                                 className="form-control"
-                                placeholder="Digite seu nome"
+                                placeholder={t("cadastro_placeholder_nome")}
                                 value={nome}
                                 onChange={(e) => setNome(e.target.value)}
                                 disabled={carregando || sucesso}
@@ -108,12 +110,12 @@ export default function CadastroPersonal() {
                         </div>
     
                         <div className="mb-3">
-                            <label className="form-label">Email</label>
+                            <label className="form-label">{t("login_email_label")}</label>
     
                             <input
                                 type="email"
                                 className="form-control"
-                                placeholder="nome@exemplo.com"
+                                placeholder={t("login_email_placeholder")}
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 disabled={carregando || sucesso}
@@ -121,7 +123,7 @@ export default function CadastroPersonal() {
                         </div>
 
                         <div className="mb-3">
-                            <label className="form-label">Registro CREF</label>
+                            <label className="form-label">{t("cadastro_personal_cref")}</label>
 
                             <input 
                                 type="text" 
@@ -134,7 +136,7 @@ export default function CadastroPersonal() {
                         </div>
 
                         <div className="mb-3">
-                        <label className="form-label">URL da Foto de Perfil (Opcional)</label>
+                        <label className="form-label">{t("cadastro_personal_foto")}</label>
                         <input 
                             type="url" 
                             className="form-control" 
@@ -146,10 +148,10 @@ export default function CadastroPersonal() {
                     </div>
 
                     <div className="mb-3">
-                        <label className="form-label">Sua Biografia / Especialidade (Opcional)</label>
+                        <label className="form-label">{t("cadastro_personal_bio")}</label>
                         <textarea 
                             className="form-control" rows="3" 
-                            placeholder="Fale sobre seu método de trabalho..." 
+                            placeholder={t("cadastro_personal_bio_placeholder")}
                             value={biografia} 
                             onChange={(e) => setBiografia(e.target.value)}
                             disabled={carregando || sucesso}
@@ -158,7 +160,7 @@ export default function CadastroPersonal() {
                     </div>
     
                         <div className="mb-3">
-                            <label className="form-label">Senha</label>
+                            <label className="form-label">{t("login_senha_label")}</label>
     
                             <input
                                 type="password"
@@ -171,7 +173,7 @@ export default function CadastroPersonal() {
                         </div>
     
                         <div className="mb-3">
-                            <label className="form-label">Confirmar Senha</label>
+                            <label className="form-label">{t("cadastro_label_confirmar_senha")}</label>
     
                             <input
                                 type="password"
@@ -185,15 +187,15 @@ export default function CadastroPersonal() {
     
                         <div className="d-grid">
                             <button className="btn btn-success" type="submit" disabled={carregando || sucesso}>
-                                {carregando ? "Cadastrando..." : "Cadastrar"}
+                                {carregando ? "Cadastrando..." : t("dash_btn_cadastrar")}
                             </button>
                         </div>
                         <div className="text-center mt-3">
                         </div>
     
                          <div className="text-center mt-4">
-                            <p className="mb-0">Já é parceiro? <Link to="/" className="text-success fw-bold text-decoration-none">Faça Login</Link></p>
-                            <p className="mt-1"><Link to="/cadastro" className="text-muted text-decoration-underline">Voltar para o cadastro de aluno</Link></p>
+                            <p className="mb-0">{t("cadastro_ja_tem_conta")} <Link to="/" className="text-success fw-bold text-decoration-none">{t("cadastro_faca_login")}</Link></p>
+                            <p className="mt-1"><Link to="/cadastro" className="text-muted text-decoration-underline">{t("cadastro_voltar_aluno")}</Link></p>
                         </div>
                     </form>
                 </div>

@@ -3,9 +3,11 @@ import { useNavigate, Link, Navigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import logo from "../imagens/logoAuraGain.png";
 import Sidebar from "../components/sideBar";
+import { useTranslation } from 'react-i18next';
 
 export default function PaginaInicial() {
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const [nome, setNome] = useState("Visitante");
     const [letraInicial, setLetraInicial] = useState("V");
@@ -53,6 +55,13 @@ export default function PaginaInicial() {
 
     const treinoAtual = meusTreinos.length > 0 ? meusTreinos[indiceTreinoAtivo] : null;
 
+    function toTranslationKey(text) {
+        return text
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "_")
+            .replace(/^_+|_+$/g, "");
+    }
+
     return (
 
         <div className="container-fluid min-vh-100 bg-light text-dark p-0" style={{ overflowX: "hidden" }}>
@@ -64,7 +73,7 @@ export default function PaginaInicial() {
                         <div className="col-lg-7 mb-4">
                             <div className="card bg-white border-0 shadow-sm h-100 rounded-4 overflow-hidden">
                                 <div className="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
-                                    <h4 className="mb-0 text-success fw-bold">Treino de Hoje</h4>
+                                    <h4 className="mb-0 text-success fw-bold">{t("dash_treino_hoje")}</h4>
                                     {meusTreinos.length > 0 && (
                                         <div className="btn-group shadow-sm">
                                             {meusTreinos.map((treino, index) => (
@@ -83,22 +92,24 @@ export default function PaginaInicial() {
                                     {carregandoTreinos ? (
                                         <div className="text-center p-5 text-muted">
                                             <div className="spinner-border text-success mb-3" role="status"></div>
-                                            <p>Carregando sua rotina...</p>
+                                            <p>{t("dash_carregando_treinos")}</p>
                                         </div>
                                     ) : meusTreinos.length === 0 ? (
                                         <div className="text-center p-5 text-muted">
-                                            <h5 className="fw-bold text-dark">Nenhum treino encontrado</h5>
-                                            <p>Você ainda não possui nenhuma ficha. Vá até o menu "Criar Treinos" para começar!</p>
-                                            <Link to="/telaCriarTreino" className="btn btn-success mt-2 fw-bold">Criar Meu Primeiro Treino</Link>
+                                            <h5 className="fw-bold text-dark">{t("dash_sem_treino_titulo")}</h5>
+                                            <p>{t("dash_sem_treino_desc")}</p>
+                                            <Link to="/telaCriarTreino" className="btn btn-success mt-2 fw-bold">{t("dash_sem_treino_btn")}</Link>
                                         </div>
                                     ) : (
                                         <ul className="list-group list-group-flush fs-5">
                                             {treinoAtual.exercicios.map((itemExercicio) => (
                                                 <li key={itemExercicio.id} className="list-group-item d-flex justify-content-between align-items-center py-3 px-4 border-bottom">
                                                     <div>
-                                                        <div className="fw-bold text-dark">{itemExercicio.exercicio.nome}</div>
+                                                        <div className="fw-bold text-dark">{t(toTranslationKey(itemExercicio.exercicio.nome))}</div>
                                                         <small className="text-muted d-none d-md-block">
-                                                            {itemExercicio.exercicio.musculoPrincipal} | {itemExercicio.exercicio.equipamento}
+                                                            {t(toTranslationKey(itemExercicio.exercicio.musculoPrincipal))}
+                                                            {" | "}
+                                                            {t(toTranslationKey(itemExercicio.exercicio.equipamento))}
                                                         </small>
                                                     </div>
                                                     <span className="badge bg-light text-success border border-success rounded-pill fs-6 px-3 py-2 shadow-sm">
@@ -112,7 +123,6 @@ export default function PaginaInicial() {
                                 {meusTreinos.length > 0 && (
 
                                     <div className="card-footer bg-white border-top-0 p-4 d-grid">
-                                        console.log(treinoAtual)
                                         <button className="btn btn-success btn-lg fw-bold shadow-sm rounded-3"
                                             onClick={() => navigate("/telaIniciarTreino",
                                                 {
@@ -120,7 +130,7 @@ export default function PaginaInicial() {
                                                         treino: treinoAtual
                                                     }
                                                 })}>
-                                            Iniciar Execução da {treinoAtual.titulo}
+                                            {t("dash_iniciar_execucao", { ficha: treinoAtual.titulo })}
                                         </button>
                                     </div>
                                 )}
@@ -132,38 +142,24 @@ export default function PaginaInicial() {
 
                                 <div className="card bg-white border-0 shadow-sm rounded-4 p-3 d-flex flex-row align-items-center">
                                     <div className="bg-primary bg-opacity-10 rounded-circle p-3 me-3 text-primary fs-3">
-                                        📅
+                                        ➕
                                     </div>
                                     <div>
-                                        <h6 className="card-title text-secondary mb-1">Treinos na Semana</h6>
-                                        <p className="card-text fs-3 fw-bold text-dark mb-0">4 <span className="fs-5 text-muted fw-normal">/ 6</span></p>
+                                        <h6 className="card-title text-secondary mb-1">{t("dash_card_cadastrar")}</h6>
+                                        <button className="btn btn-sm btn-success btn-lg fw-bold rounded-3" onClick={() => navigate("/telaCriarTreino")} >{t("dash_btn_cadastrar")}</button>
                                     </div>
                                 </div>
 
                                 <div className="card bg-white border-0 shadow-sm rounded-4 p-3 d-flex flex-row align-items-center">
                                     <div className="bg-info bg-opacity-10 rounded-circle p-3 me-3 text-info fs-3">
-                                        ⚖️
+                                        🏋️‍♂️
                                     </div>
                                     <div>
-                                        <h6 className="card-title text-secondary mb-1">Peso Atual</h6>
-                                        <p className="card-text fs-3 fw-bold text-dark mb-0">106.9 kg</p>
-                                    </div>
-                                </div>
 
-                                <div className="card bg-white border-0 shadow-sm rounded-4 p-3 d-flex flex-row align-items-center">
-                                    <div className="bg-warning bg-opacity-10 rounded-circle p-3 me-3 text-warning fs-3">
-                                        ⚡
-                                    </div>
-                                    <div>
-                                        <h6 className="card-title text-secondary mb-1">Próximo Foco</h6>
-                                        <p className="card-text fs-4 fw-bold text-dark mb-0">Treino B - Pull</p>
-                                    </div>
-                                </div>
-
-                                <div className="card text-black border-0 shadow-sm rounded-4 mt-2">
-                                    <div className="card-body p-4">
-                                        <h5 className="fw-bold mb-2">Desempenho em Alta! 🔥</h5>
-                                        <p className="mb-0 text-black-50">Você aumentou sua carga no supino em 5kg este mês. Continue assim!</p>
+                                        <div>
+                                            <h6 className="card-title text-secondary mb-1">{t("dash_card_solicitar")}</h6>
+                                            <button className="btn btn-sm btn-success btn-lg fw-bold rounded-3" onClick={() => navigate("/areaPersonal")}>{t("dash_btn_solicitar")}</button>
+                                        </div>
                                     </div>
                                 </div>
 

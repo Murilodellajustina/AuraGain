@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import logo from "../imagens/logoAuraGain.png";
+import { useTranslation } from 'react-i18next';
 
 export default function Sidebar({ children }) {
-
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -71,7 +72,7 @@ export default function Sidebar({ children }) {
                     <h5 className="mb-0 fw-bold text-success">AuraGain</h5>
                 </div>
                 <div className="d-flex align-items-center">
-                    <span className="me-3 fw-medium text-secondary d-none d-sm-inline">Olá, {nome}! </span>
+                    <span className="me-3 fw-medium text-secondary d-none d-sm-inline">{t("dash_saudacao", { nome: nome })}</span>
                     <div className="bg-success text-white rounded-circle d-flex align-items-center justify-content-center fw-bold shadow-sm" style={{ width: "40px", height: "40px" }}>
                         {letraInicial}
                     </div>
@@ -93,23 +94,18 @@ export default function Sidebar({ children }) {
                 <ul className="nav flex-column mb-auto fs-5">
                     <li className="nav-item mb-2">
                         <Link to="/paginaInicial" className="nav-link text-success fw-bold bg-success bg-opacity-10 rounded">
-                            Dashboard
+                            {t("sidebar_dashboard")}
                         </Link>
                     </li>
                     <li className="nav-item mb-2">
                         <Link to="/telaCriarTreino" className="nav-link text-dark custom-hover">
-                            Criar treinos
-                        </Link>
-                    </li>
-                    <li className="nav-item mb-2">
-                        <Link to="#" className="nav-link text-dark custom-hover">
-                            Medidas
+                            {t("sidebar_criar")}
                         </Link>
                     </li>
                     <hr className="text-secondary" />
                     <li className="nav-item mb-2">
                         <Link to="/areaPersonal" className="nav-link text-dark custom-hover">
-                            Área do Personal
+                            {t("sidebar_personal")}
                         </Link>
                     </li>
                 </ul>
@@ -117,7 +113,7 @@ export default function Sidebar({ children }) {
                 <hr className="text-secondary" />
                 <div className="d-grid">
                     <button className="btn btn-outline-danger fw-bold" onClick={handleLogout}>
-                        Sair
+                        {t("sidebar_sair")}
                     </button>
                 </div>
             </div>

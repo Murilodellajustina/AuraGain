@@ -3,8 +3,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import logo from "../imagens/logoAuraGain.png"
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 export default function Login() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
@@ -66,7 +68,7 @@ export default function Login() {
           className="mx-auto d-block mb-4"
           style={{ width: "250px" }}
         />
-        <h2 className="text-center mb-4">Login</h2>
+        <h2 className="text-center mb-4">{t("login_titulo")}</h2>
 
         {erro && (
           <div className="alert alert-danger py-2 text-center fw-bold" role="alert">
@@ -76,12 +78,12 @@ export default function Login() {
 
         <form onSubmit={handleLogin}>
           <div className="mb-3">
-            <label className="form-label">Email</label>
+            <label className="form-label">{t("login_email_label")}</label>
 
             <input
               type="email"
               className="form-control"
-              placeholder="nome@exemplo.com"
+              placeholder={t("login_email_placeholder")}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={carregando}
@@ -89,7 +91,7 @@ export default function Login() {
           </div>
 
           <div className="mb-3">
-            <label className="form-label">Senha</label>
+            <label className="form-label">{t("login_senha_label")}</label>
 
             <input
               type="password"
@@ -103,15 +105,15 @@ export default function Login() {
 
           <div className="d-grid">
             <button className="btn btn-success" type="submit" disabled={carregando}>
-              {carregando ? "Entrando..." : "Entrar"}
+              {t("login_entrar_btn")}
             </button>
           </div>
           <div className="text-center mt-3">
             <p>
-              Não tem uma conta? <Link to="/cadastro" className="text-success text-decoration-none fw-bold">Cadastre-se</Link>
+              {t("login_sem_conta")} <Link to="/cadastro" className="text-success text-decoration-none fw-bold">{t("login_cadastre_se")}</Link>
             </p>
             <small className="text-muted">
-               É Personal Trainer? <Link to="/cadastroPersonal" className="text-dark fw-bold text-decoration-underline">Entre aqui</Link>
+               {t("login_pergunta_personal")} <Link to="/cadastroPersonal" className="text-dark fw-bold text-decoration-underline">{t("login_entre_aqui")}</Link>
             </small>
           </div>
         </form>
