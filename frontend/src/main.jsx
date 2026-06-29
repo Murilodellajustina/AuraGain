@@ -14,6 +14,7 @@ import TelaCriarTreinoAluno from "./pages/telaCriarTreinoAluno.jsx";
 import Perfil from "./pages/perfil.jsx";
 import TelaEditarTreino from "./pages/telaEditarTreino.jsx";
 import TelaEvolucao from "./pages/telaEvolucao.jsx";
+import TelaMedidas from "./pages/telaMedidas.jsx";
 
 const router = createHashRouter([
   { path: "/", element: <Login /> },
@@ -26,7 +27,8 @@ const router = createHashRouter([
   { path: "/telaCriarTreinoAluno", element: <TelaCriarTreinoAluno />},
   { path: "/perfil", element: <Perfil /> },
   { path: "/telaEditarTreino", element: <TelaEditarTreino /> },
-  { path: "/telaEvolucao", element: <TelaEvolucao />}
+  { path: "/telaEvolucao", element: <TelaEvolucao />},
+  { path: "/telaMedidas", element: <TelaMedidas />}
 ],
 );
 createRoot(document.getElementById("root")).render(
