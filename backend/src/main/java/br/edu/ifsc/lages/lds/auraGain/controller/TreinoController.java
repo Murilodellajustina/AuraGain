@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import br.edu.ifsc.lages.lds.auraGain.dto.PesoDTO;
 import br.edu.ifsc.lages.lds.auraGain.dto.TreinoRequestDTO;
+import br.edu.ifsc.lages.lds.auraGain.dto.ExecucaoTreinoDTO;
 import br.edu.ifsc.lages.lds.auraGain.model.Treino;
 import br.edu.ifsc.lages.lds.auraGain.model.TreinoExercicio;
 import br.edu.ifsc.lages.lds.auraGain.repository.TreinoExercicioRepository;
@@ -67,6 +68,27 @@ public class TreinoController {
     public ResponseEntity<?> atualizarTreino(@PathVariable Long id, @RequestBody TreinoRequestDTO dto) {
         try {
             return ResponseEntity.ok(treinoService.atualizarTreino(id, dto));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/executar")
+    @Operation(summary = "Register Workout History", description = "Registers a workout history with its associated weights for a specific exercise.")
+    public ResponseEntity<?> registrarExecucao(@RequestBody ExecucaoTreinoDTO dto) {
+        try {
+            treinoService.registrarExecucao(dto);
+            return ResponseEntity.ok("Treino finalizado e histórico salvo com sucesso!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/historico/{email}/{exercicioId}")
+    @Operation(summary = "Evolution Chart", description = "Returns the load history for a specific exercise, sorted by date.")
+    public ResponseEntity<?> buscarHistoricoCarga(@PathVariable String email, @PathVariable Long exercicioId) {
+        try {
+            return ResponseEntity.ok(treinoService.buscarHistoricoDeCarga(email, exercicioId)); 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

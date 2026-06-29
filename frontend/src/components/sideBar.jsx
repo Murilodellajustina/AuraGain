@@ -115,7 +115,12 @@ export default function Sidebar({ children }) {
                     </li>
                     <li className="nav-item mb-2" title="Alt+U">
                         <Link to="/perfil" className="nav-link text-dark custom-hover">
-                            Perfil
+                            {t("sidebar_perfil")}
+                        </Link>
+                    </li>
+                    <li className="nav-item mb-2">
+                        <Link to="/telaEvolucao" className="nav-link text-dark custom-hover">
+                            {t("sidebar_evolucao")}
                         </Link>
                     </li>
                     <hr className="text-secondary" />

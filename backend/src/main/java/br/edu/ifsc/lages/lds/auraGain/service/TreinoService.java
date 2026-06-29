@@ -3,10 +3,16 @@ package br.edu.ifsc.lages.lds.auraGain.service;
 import br.edu.ifsc.lages.lds.auraGain.dto.ItemTreinoDTO;
 import br.edu.ifsc.lages.lds.auraGain.dto.PesoDTO;
 import br.edu.ifsc.lages.lds.auraGain.dto.TreinoRequestDTO;
+import br.edu.ifsc.lages.lds.auraGain.dto.ExecucaoTreinoDTO;
+import br.edu.ifsc.lages.lds.auraGain.dto.ItemExecucaoDTO;
+import br.edu.ifsc.lages.lds.auraGain.dto.ItemExecucaoTreinoDTO;
+import br.edu.ifsc.lages.lds.auraGain.dto.ProgressoCargaDTO;
 import br.edu.ifsc.lages.lds.auraGain.model.Exercicio;
 import br.edu.ifsc.lages.lds.auraGain.model.Treino;
+import br.edu.ifsc.lages.lds.auraGain.model.ProgressoCarga;
 import br.edu.ifsc.lages.lds.auraGain.model.Usuario;
 import br.edu.ifsc.lages.lds.auraGain.repository.ExercicioRepository;
+import br.edu.ifsc.lages.lds.auraGain.repository.ProgressoCargaRepository;
 import br.edu.ifsc.lages.lds.auraGain.repository.TreinoExercicioRepository;
 import br.edu.ifsc.lages.lds.auraGain.model.TreinoExercicio;
 import br.edu.ifsc.lages.lds.auraGain.repository.TreinoRepository;
@@ -14,6 +20,8 @@ import br.edu.ifsc.lages.lds.auraGain.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -24,7 +32,8 @@ public class TreinoService {
     private UsuarioRepository usuarioRepository;
     @Autowired
     private ExercicioRepository exercicioRepository;
-
+    @Autowired
+    private ProgressoCargaRepository progressoCargaRepository;
     @Autowired
     private TreinoExercicioRepository treinoExercicioRepository;
 
@@ -93,6 +102,40 @@ public class TreinoService {
         }
 
         return treinoRepository.save(treino);
+    }
+
+    @Transactional
+    public void registrarExecucao(ExecucaoTreinoDTO dto) throws Exception {
+        Usuario usuario = usuarioRepository.findByEmail(dto.getEmailUsuario())
+                .orElseThrow(() -> new Exception("Usuário não encontrado."));
+
+        for (ItemExecucaoDTO item : dto.getExercicios()) {
+            
+            TreinoExercicio te = treinoExercicioRepository.findById(item.getTreinoExercicioId())
+                    .orElseThrow(() -> new Exception("Exercício do Treino não encontrado."));
+            
+            te.setPeso(item.getPesoUtilizado()); 
+            treinoExercicioRepository.save(te);
+
+            ProgressoCarga progresso = new ProgressoCarga();
+            progresso.setUsuario(usuario);
+            progresso.setExercicio(te.getExercicio());
+            progresso.setPeso(item.getPesoUtilizado());
+            progresso.setDataExecucao(LocalDate.now());
+            
+            progressoCargaRepository.save(progresso);
+        }
+    }
+
+    public List<ProgressoCargaDTO> buscarHistoricoDeCarga(String email, Long exercicioId) throws Exception {
+        usuarioRepository.findByEmail(email).orElseThrow(() -> new Exception("Usuário não encontrado."));
+
+        List<ProgressoCarga> historico = 
+            progressoCargaRepository.findByUsuarioEmailAndExercicioIdOrderByDataExecucaoAsc(email, exercicioId);
+
+        return historico.stream()
+                .map(h -> new ProgressoCargaDTO(h.getDataExecucao(), h.getPeso()))
+                .collect(java.util.stream.Collectors.toList());
     }
 
     public void deletarTreino(Long idTreino) {

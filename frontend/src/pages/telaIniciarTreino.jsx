@@ -24,6 +24,7 @@ export default function IniciarTreino() {
     const [carregandoTreinos, setCarregandoTreinos] = useState(true);
 
     const [realizados, setRealizados] = useState({});
+    const [carregando, setCarregando] = useState(false);
     const concluidos = Object.values(realizados).filter(Boolean).length;
     const progresso = (concluidos / treino.exercicios.length) * 100;
     const treinoFinalizado = treino.exercicios.every(ex => realizados[ex.id]);
@@ -31,16 +32,17 @@ export default function IniciarTreino() {
     const [pesos, setPesos] = useState({});
 
     useEffect(() => {
-        const nomeSalvo = localStorage.getItem("userName");
-        const emailSalvo = localStorage.getItem("userEmail");
-        if (nomeSalvo && emailSalvo) {
-            setNome(nomeSalvo.split(" ")[0]);
-            setLetraInicial(nomeSalvo.charAt(0).toUpperCase());
-            buscarTreinosDoBanco(emailSalvo);
-        } else {
-            navigate("/login");
+        if (!treino) {
+            navigate("/paginaInicial");
+            return;
         }
-    }, [navigate]);
+
+        const pesosIniciais = {};
+        treino.exercicios.forEach(ex => {
+            pesosIniciais[ex.id] = ex.peso || 0; 
+        });
+        setPesos(pesosIniciais);
+    }, [treino, navigate]);
 
     async function alternarRealizado(id) {
         setRealizados((anterior) => ({
@@ -48,6 +50,10 @@ export default function IniciarTreino() {
             [id]: !anterior[id]
         }));
     }
+
+    const handlePesoChange = (id, valor) => {
+        setPesos(prev => ({ ...prev, [id]: valor }));
+    };
 
     async function buscarTreinosDoBanco(email) {
         try {
@@ -111,23 +117,38 @@ export default function IniciarTreino() {
         navigate("/");
     }
 
-    async function finalizarTreino() {
+    const finalizarTreino = async () => {
+        if (!treinoFinalizado) return;
+        
+        setCarregando(true);
+        const emailUsuario = localStorage.getItem("userEmail");
 
-        const lista = treino.exercicios.map(item => ({
-            id: item.id,
-            peso: pesos[item.id] || 0
-        }));
+        const payload = {
+            emailUsuario: emailUsuario,
+            exercicios: treino.exercicios.map(ex => ({
+                treinoExercicioId: ex.id,
+                exercicioId: ex.exercicio.id,
+                pesoUtilizado: parseInt(pesos[ex.id]) || 0
+            }))
+        };
 
-        await fetch("http://localhost:8080/api/treinos/pesos", {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(lista)
-        });
+        try {
+            const res = await fetch("http://localhost:8080/api/treinos/executar", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
 
-        navigate("/paginaInicial");
-    }
+            if (res.ok) {
+                navigate("/paginaInicial");
+            } else {
+                const erro = await res.text();
+            }
+        } catch (error) {
+        } finally {
+            setCarregando(false);
+        }
+    };
 
 
     const [segundos, setSegundos] = useState(0);
@@ -156,6 +177,8 @@ export default function IniciarTreino() {
         "Alt+F": () => finalizarTreino(),
         "Alt+I": () => imprimirFichaPDF()
     });
+
+    if (!treino) return null;
 
     return (
         <Sidebar>
@@ -193,72 +216,69 @@ export default function IniciarTreino() {
                     </div>
 
 
-                    {treino.exercicios.map((item) => (
-                        <><div
-                            key={item.id}
-                            className={`card mb-3 col-lg-10 ${realizados[item.id] ? "border-success" : ""
-                                }`}
-                        >
-                            <div className="card-body  d-flex justify-content-between align-items-center">
-                                <h5>{t(toTranslationKey(item.exercicio.nome))}</h5>
-                                <p>
-                                    {item.series} {t("series")} × {item.repeticoesAlvo} {t("repeticoes")}
-                                </p>
-                                <button
-                                    className={`btn ${realizados[item.id]
-                                        ? "btn-success"
-                                        : "btn-outline-secondary"
-                                        }`}
-                                    onClick={() => alternarRealizado(item.id)}
-
-                                >
-                                    {realizados[item.id] ? t("status_realizado") : t("status_nao_realizado")}
-                                </button>
-                                {realizados && (
-                                    <div className="input-group mt-2 col-lg-6" style={{ maxWidth: "180px" }}>
-
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            placeholder={item.peso + t("label_anterior")}
-                                            disabled={realizados[item.id]}
-                                            value={pesos[item.id] || ""}
-                                            onChange={(e) =>
-                                                setPesos({
-                                                    ...pesos,
-                                                    [item.id]: Number(e.target.value)
-                                                })
-                                            }
-
-                                        />
-                                        <span className="input-group-text">kg</span>
-
+                    {treino.exercicios.map((itemExercicio, index) => (
+                        <div key={itemExercicio.id} className="card shadow-sm border-0 rounded-4 mb-3 p-3">
+                            <div className="d-flex justify-content-between align-items-center">
+                                <div className="d-flex align-items-center gap-3">
+                                    <input 
+                                        type="checkbox" 
+                                        className="form-check-input mt-0" 
+                                        style={{ width: "25px", height: "25px", cursor: "pointer" }}
+                                        checked={!!realizados[itemExercicio.id]}
+                                        onChange={() => alternarRealizado(itemExercicio.id)} 
+                                    />
+                                    <div>
+                                        <h5 className={`mb-0 fw-bold ${realizados[itemExercicio.id] ? "text-success" : "text-dark"}`}>
+                                            {itemExercicio.exercicio.nome}
+                                        </h5>
+                                        <small className="text-muted">
+                                            {itemExercicio.series} {t("series")} x {itemExercicio.repeticoesAlvo} {t("reps")}
+                                        </small>
                                     </div>
-                                )}
+                                </div>
+                            
+                            {!realizados[itemExercicio.id] && (
+                                    <div className="input-group" style={{ width: "120px" }}>
+                                        <input 
+                                            type="number" 
+                                            className="form-control text-center fw-bold" 
+                                            min="0"
+                                            value={pesos[itemExercicio.id] !== undefined ? pesos[itemExercicio.id] : ''} 
+                                            onChange={(e) => handlePesoChange(itemExercicio.id, e.target.value)} 
+                                        />
+                                        <span className="input-group-text bg-white fw-bold">kg</span>
+                                    </div>
+                                
+                            )}
                             </div>
-                        </div >
-                        </>
-
+                        </div>
                     ))}
 
-                    <div className="mb-4">
-                        <div className="d-flex justify-content-between">
-                            <span>{t("progresso")}</span>
-                            <span>{concluidos}/{treino.exercicios.length}</span>
+                    <div className="card shadow-sm border-0 rounded-4 p-4 mt-4">
+                        <div className="d-flex justify-content-between mb-2 fw-bold">
+                            <span className="text-secondary">{t("progresso") || "Progresso"}</span>
+                            <span className="text-success">{concluidos} / {treino.exercicios.length}</span>
                         </div>
 
-                        <div className="progress">
+                        <div className="progress mb-4" style={{ height: "15px", borderRadius: "10px" }}>
                             <div
-                                className="progress-bar "
-                                style={{ width: `${progresso}%`, backgroundColor: '#119943',backgroundImage: 'linear-gradient(to right, #95fbc8, #46ff74, #00ff80)', }}
+                                className="progress-bar"
+                                style={{ 
+                                    width: `${progresso}%`, 
+                                    backgroundColor: '#119943',
+                                    backgroundImage: 'linear-gradient(to right, #95fbc8, #46ff74, #00ff80)', 
+                                    transition: "width 0.4s ease-in-out"
+                                }}
                             />
                         </div>
-                    </div>
 
-                    <div className="card-footer bg-white border-top-0 p-4 d-grid">
-                        <button className="btn btn-success btn-lg fw-bold shadow-sm rounded-3" title="Alt+F" disabled={!treinoFinalizado}
-                            onClick={finalizarTreino}>
-                            {t("finalizar_treino")} {t(toTranslationKey(treino.titulo))}
+                        <button 
+                            className={`btn btn-lg w-100 fw-bold rounded-pill shadow-sm ${treinoFinalizado ? 'btn-success' : 'btn-secondary'}`} 
+                            title="Alt+F" 
+                            disabled={!treinoFinalizado || carregando}
+                            onClick={finalizarTreino}
+                        >
+                            {carregando ? t("iniciar_salvando") || "Salvando histórico..." : t("finalizar_treino") || "Finalizar Treino"}
                         </button>
                     </div>
 

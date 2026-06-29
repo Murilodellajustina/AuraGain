@@ -6,16 +6,24 @@ import Sidebar from "../components/sideBar";
 import { useTranslation } from 'react-i18next';
 import useAtalhos from "../hooks/useAtalhos";
 
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+
+
 export default function PaginaInicial() {
     const navigate = useNavigate();
     const { t } = useTranslation();
 
     const [nome, setNome] = useState("Visitante");
     const [letraInicial, setLetraInicial] = useState("V");
+    const [emailUsuario, setEmailUsuario] = useState("");
 
     const [meusTreinos, setMeusTreinos] = useState([]);
     const [indiceTreinoAtivo, setIndiceTreinoAtivo] = useState(0);
     const [carregandoTreinos, setCarregandoTreinos] = useState(true);
+
+    const [exercicioGraficoSelecionado, setExercicioGraficoSelecionado] = useState(null);
+    const [dadosGrafico, setDadosGrafico] = useState([]);
+    const [carregandoGrafico, setCarregandoGrafico] = useState(false);
 
     useEffect(() => {
         const nomeSalvo = localStorage.getItem("userName");
@@ -55,6 +63,71 @@ export default function PaginaInicial() {
 
 
     const treinoAtual = meusTreinos.length > 0 ? meusTreinos[indiceTreinoAtivo] : null;
+
+    useEffect(() => {
+        if (treinoAtual && treinoAtual.exercicios && treinoAtual.exercicios.length > 0) {
+            const primeiroExercicio = treinoAtual.exercicios[0].exercicio;
+            setExercicioGraficoSelecionado(primeiroExercicio);
+        } else {
+            setExercicioGraficoSelecionado(null);
+        }
+    }, [treinoAtual]);
+
+    useEffect(() => {
+        
+        const email = localStorage.getItem("userEmail"); 
+
+        if (!exercicioGraficoSelecionado) {
+            return;
+        }
+
+        if (!email) {
+            return;
+        }
+
+        async function buscarHistorico() {
+            setCarregandoGrafico(true);
+            try {
+                const urlDaApi = `http://localhost:8080/api/treinos/historico/${encodeURIComponent(email)}/${exercicioGraficoSelecionado.id}`;
+
+                const res = await fetch(urlDaApi);
+                
+                if (res.ok) {
+                    const historico = await res.json();
+                    
+                    if (Array.isArray(historico) && historico.length > 0) {
+                        const dadosFormatados = historico.map(item => {
+                            let dia = "00", mes = "00";
+                            if (typeof item.data === 'string') {
+                                const partesData = item.data.split("-");
+                                dia = partesData[2];
+                                mes = partesData[1];
+                            } else if (Array.isArray(item.data)) {
+                                dia = String(item.data[2]).padStart(2, '0');
+                                mes = String(item.data[1]).padStart(2, '0');
+                            }
+                            return {
+                                ...item,
+                                dataFormatada: `${dia}/${mes}`,
+                                peso: item.peso 
+                            };
+                        });
+                        setDadosGrafico(dadosFormatados);
+                    } else {
+                        setDadosGrafico([]);
+                    }
+                } else {
+                    const erroTxt = await res.text();
+                    setDadosGrafico([]);
+                }
+            } catch (error) {
+                setDadosGrafico([]);
+            } finally {
+                setCarregandoGrafico(false);
+            }
+        }
+        buscarHistorico();
+    }, [exercicioGraficoSelecionado]);
 
     function toTranslationKey(text) {
         return text
@@ -176,6 +249,56 @@ export default function PaginaInicial() {
                         </div>
 
                     </div>
+                    <div className="p-4 bg-white">
+                    {treinoAtual && (
+                        <div className="card shadow-sm border-0 rounded-4 p-4 mt-4 bg-white">
+                     <h6 className="fw-bold text-dark mb-3">📈 {t("dash_evolucao_titulo")}</h6>
+                                
+                                <div className="d-flex gap-2 overflow-auto pb-3 custom-scrollbar" style={{ whiteSpace: "nowrap" }}>
+                                    {treinoAtual.exercicios.map(item => (
+                                        <button 
+                                            key={item.id}
+                                            className={`btn btn-sm rounded-pill fw-bold border ${exercicioGraficoSelecionado?.id === item.exercicio.id ? 'btn-success text-white border-success' : 'btn-light text-secondary border-secondary'}`}
+                                            onClick={() => setExercicioGraficoSelecionado(item.exercicio)}
+                                        >
+                                            {t(toTranslationKey(item.exercicio.nome)) || item.exercicio.nome}
+                                        </button>
+                                    ))}
+                                </div>
+                                <div className="mt-3 bg-light rounded-4 p-3 border">
+                                    {carregandoGrafico ? (
+                                        <div className="text-center py-5">
+                                            <span className="spinner-border text-success spinner-border-sm" role="status" aria-hidden="true"></span>
+                                        </div>
+                                    ) : dadosGrafico.length === 0 ? (
+                                        <div className="text-center py-5 text-muted">
+                                            <h3 className="opacity-25 mb-3">📉</h3>
+                                            <p className="mb-0">{t("dash_sem_registos")}</p>
+                                        </div>
+                                    ) : (
+                                        <div style={{ width: '100%', height: 250 }}>
+                                            <ResponsiveContainer>
+                                                <LineChart data={dadosGrafico} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e0e0e0" />
+                                                    <XAxis dataKey="dataFormatada" tick={{ fontSize: 12, fill: '#6c757d' }} tickLine={false} axisLine={false} dy={10} />
+                                                    <YAxis tick={{ fontSize: 12, fill: '#6c757d' }} tickLine={false} axisLine={false} />
+                                                    <Line 
+                                                        type="monotone" 
+                                                        dataKey="peso" 
+                                                        stroke="#198754" 
+                                                        strokeWidth={3} 
+                                                        dot={{ r: 4, fill: "#198754", stroke: "#fff", strokeWidth: 2 }} 
+                                                        activeDot={{ r: 6, fill: "#198754", stroke: "#fff", strokeWidth: 2 }}
+                                                        animationDuration={1500}
+                                                    />
+                                                </LineChart>
+                                            </ResponsiveContainer>
+                                        </div>
+                                    )}
+                                </div>
+                                </div>
+                        )}
+                                </div>
                 </div>
             </Sidebar>
         </div>
