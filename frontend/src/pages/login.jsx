@@ -41,10 +41,10 @@ export default function Login() {
         navigate("/paginaInicial");
       } else {
         const errorData = await response.json();
-        setErro(errorData.message || "Email ou senha inválidos.");
+        setErro(errorData.message || t("erro_login_invalido"));
       }
     } catch (err) {
-      setErro("Erro de conexão com o servidor.");
+      setErro(t("erro_conexao_servidor"));
       console.error(err);
     } finally {
       setCarregando(false);

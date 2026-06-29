@@ -44,7 +44,7 @@ export default function AreaPersonal() {
             const res = await fetch("http://localhost:8080/api/vinculos/personais");
             if (res.ok) setPersonais(await res.json());
         } catch (error) {
-            console.error("Erro ao buscar personais", error);
+            console.error(t("erro_buscar_personais"), error);
         }
     }
 
@@ -58,7 +58,7 @@ export default function AreaPersonal() {
                 alert(msg);
             }
         } catch (error) {
-            alert("Erro ao enviar solicitação.");
+            alert(t("alerta_erro_enviar_solicitacao"));
         }
     }
 
@@ -70,7 +70,7 @@ export default function AreaPersonal() {
             const resA = await fetch(`http://localhost:8080/api/vinculos/meus-alunos?emailPersonal=${email}`);
             if (resA.ok) setMeusAlunos(await resA.json());
         } catch (error) {
-            console.error("Erro ao buscar painel do personal", error);
+            console.error(t("erro_buscar_personais"), error);
         }
     }
 
@@ -78,11 +78,11 @@ export default function AreaPersonal() {
         try {
             const res = await fetch(`http://localhost:8080/api/vinculos/responder/${idVinculo}?aceitar=${aceitar}`, { method: 'PUT' });
             if (res.ok) {
-                alert(aceitar ? "Aluno aceito!" : "Solicitação recusada.");
+                alert(aceitar ? t("alerta_aluno_aceito") : t("alerta_solicitacao_recusada"));
                 buscarDashboardPersonal(userEmail);
             }
         } catch (error) {
-            alert("Erro ao responder.");
+            alert(t("alerta_erro_responder"));
         }
     }
     async function criarTreino(alunoEmail, alunoNome) {
@@ -90,7 +90,7 @@ export default function AreaPersonal() {
             navigate("/telaCriarTreinoAluno", { state: { emailAluno: alunoEmail, nomeAluno: alunoNome } });
 
         } catch (error) {
-            alert("Erro ao responder.");
+            alert(t("alerta_erro_responder"));
         }
 
     }
@@ -129,7 +129,7 @@ export default function AreaPersonal() {
                                                 <div className="card-body text-center">
                                                     <h5 className="fw-bold text-dark mb-1">{personal.nome}</h5>
                                                     <span className="badge bg-success mb-3">CREF: {personal.cref}</span>
-                                                    <p className="text-muted small mb-4">{personal.biografia || "Profissional dedicado ao seu resultado."}</p>
+                                                    <p className="text-muted small mb-4">{personal.biografia || t("area_bio_padrao")}</p>
                                                     <button className="btn btn-outline-success w-100 fw-bold" onClick={() => enviarSolicitacao(personal.id)}>
                                                         {t("area_enviar_solicitacao")}
                                                     </button>

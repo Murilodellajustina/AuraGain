@@ -39,10 +39,10 @@ export default function PaginaInicial() {
 
                 setMeusTreinos(dados);
             } else {
-                console.error("Erro ao buscar treinos.");
+                console.error(t("erro_buscar_treinos"));
             }
         } catch (erro) {
-            console.error("Erro de conexão com o banco:", erro);
+            console.error(t("erro_conexao_servidor"), erro);
         } finally {
             setCarregandoTreinos(false);
         }
@@ -59,7 +59,7 @@ export default function PaginaInicial() {
     function toTranslationKey(text) {
         return text
             .toLowerCase()
-            .replace(/[^a-z0-9]+/g, "_")
+            .replace(/[^a-z0-9]+/g, "_")    
             .replace(/^_+|_+$/g, "");
     }
 
@@ -91,7 +91,7 @@ export default function PaginaInicial() {
                                                     className={`btn btn-sm ${indiceTreinoAtivo === index ? 'btn-success fw-bold' : 'btn-outline-success'}`}
                                                     onClick={() => setIndiceTreinoAtivo(index)}
                                                 >
-                                                    {treino.titulo}
+                                                    {t(toTranslationKey(treino.titulo))}
                                                 </button>
                                             ))}
                                         </div>
@@ -139,7 +139,7 @@ export default function PaginaInicial() {
                                                         treino: treinoAtual
                                                     }
                                                 })}>
-                                            {t("dash_iniciar_execucao", { ficha: treinoAtual.titulo })}
+                                            {t("dash_iniciar_execucao", { ficha: t(toTranslationKey(treinoAtual.titulo)) })}
                                         </button>
                                     </div>
                                 )}

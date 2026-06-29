@@ -146,7 +146,7 @@ export default function Cadastrar() {
 
                     <div className="d-grid">
                         <button className="btn btn-success" type="submit" disabled={carregando || sucesso}>
-                            {carregando ? "Cadastrando..." : t("dash_btn_cadastrar")}
+                            {carregando ? t("cadastrando"): t("dash_btn_cadastrar")}
                         </button>
                     </div>
                     <div className="text-center mt-3">
