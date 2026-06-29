@@ -42,7 +42,7 @@ export default function EditarTreino() {
                 const dados = await listarExercicios();
                 setExercicios(dados);
             } catch (erro) {
-                console.error("Erro ao carregar exercícios:", erro);
+                console.error(t("erro_carregar_exercicios"), erro);
             }
         }
         carregarExercicio();
@@ -66,14 +66,14 @@ export default function EditarTreino() {
 
     const handleSalvarEdicao = async () => {
         if (!opcaoSelecionada) {
-            alert(t("criar_alerta_selecione_dia") || "Selecione o dia da ficha.");
+            alert(t("criar_alerta_selecione_dia"));
             return;
         }
 
         const exerciciosValidos = linhasExercicios.filter(linha => linha.exercicioId && linha.series && linha.repeticoes);
         
         if (exerciciosValidos.length === 0 || exerciciosValidos.length !== linhasExercicios.length) {
-            alert(t("criar_alerta_preencher_campos") || "Preencha todos os campos do exercício.");
+            alert(t("criar_alerta_preencher_campos"));
             return;
         }
 
@@ -97,14 +97,14 @@ export default function EditarTreino() {
             });
 
             if (resposta.ok) {
-                alert(t("criar_alerta_sucesso") || "Treino atualizado com sucesso!");
+                alert(t("criar_alerta_sucesso"));
                 navigate("/perfil"); 
             } else {
                 const erroMsg = await resposta.text();
-                alert("Erro: " + erroMsg);
+                alert(erroMsg);
             }
         } catch (error) {
-            alert(t("cadastro_erro_servidor") || "Erro de conexão com o servidor.");
+            alert(t("erro_conexao_servidor"));
             console.error(error);
         } finally {
             setCarregando(false);
@@ -169,7 +169,7 @@ export default function EditarTreino() {
                             <div className="card bg-white border-0 shadow-sm h-100 rounded-4 overflow-hidden">
                                 
                                 <div className="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
-                                    <h4 className="mb-0 text-success fw-bold">✏️ Editar Ficha de Treino</h4>
+                                    <h4 className="mb-0 text-success fw-bold">✏️ {t("editar_ficha_treino")}</h4>
                                 </div>
                                 
                                 <div className="card-body p-0">
@@ -239,13 +239,13 @@ export default function EditarTreino() {
                                     </ul>
                                     
                                     <button className="btn btn-outline-success fw-bold shadow-sm rounded-3 " title="Alt+N" style={{ marginTop: '20px', marginLeft: '20px' }} onClick={adicionarNovaLinha}>
-                                        {t("criar_btn_adicionar") || "+ Adicionar Exercício"}
+                                        {t("criar_btn_adicionar")}
                                     </button>
                                 </div>
                                 
                                 <div className="card-footer bg-white border-top-0 p-4 d-grid">
                                     <button className="btn btn-success btn-lg fw-bold shadow-sm rounded-3" title="Alt+C" onClick={handleSalvarEdicao} disabled={carregando}>
-                                        {carregando ? t("criar_salvando") : "Guardar Alterações do Treino"}
+                                        {carregando ? t("criar_salvando") : t("guardar_alteracoes_treino")}
                                     </button>
                                 </div>
                                 

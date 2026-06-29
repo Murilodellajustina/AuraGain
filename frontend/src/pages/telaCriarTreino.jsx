@@ -14,7 +14,7 @@ export default function CadastrarTreino() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [opcaoSelecionada, setOpcaoSelecionada] = useState(null);
 
-    const [nome, setNome] = useState("Visitante");
+    const [nome, setNome] = useState(t("visitante"));
     const [letraInicial, setLetraInicial] = useState("V");
     const [email, setEmail] = useState("");
     const [exercicios, setExercicios] = useState([]);

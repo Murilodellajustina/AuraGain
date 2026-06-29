@@ -174,7 +174,7 @@ export default function IniciarTreino() {
                     <div className="card-body  d-flex justify-content-between align-items-center"><h2 style={{
                         borderRight: "80px"
                     }}>
-                        {treino.titulo}
+                        {t(toTranslationKey(treino.titulo))}
                     </h2>
 
                         <div className="d-flex align-items-center gap-3">
@@ -183,7 +183,7 @@ export default function IniciarTreino() {
                                 onClick={imprimirFichaPDF}
                                 title="Baixar PDF"
                             >
-                                PDF
+                                {t("baixar_pdf")}
                             </button>
 
                             <h4 className="mb-0" style={{ border: "2px solid black", padding: "5px 10px", borderRadius: "8px" }}>
@@ -249,8 +249,8 @@ export default function IniciarTreino() {
 
                         <div className="progress">
                             <div
-                                className="progress-bar"
-                                style={{ width: `${progresso}%` }}
+                                className="progress-bar "
+                                style={{ width: `${progresso}%`, backgroundColor: '#119943',backgroundImage: 'linear-gradient(to right, #95fbc8, #46ff74, #00ff80)', }}
                             />
                         </div>
                     </div>
@@ -258,7 +258,7 @@ export default function IniciarTreino() {
                     <div className="card-footer bg-white border-top-0 p-4 d-grid">
                         <button className="btn btn-success btn-lg fw-bold shadow-sm rounded-3" title="Alt+F" disabled={!treinoFinalizado}
                             onClick={finalizarTreino}>
-                            {t("finalizar_treino")} {treino.titulo}
+                            {t("finalizar_treino")} {t(toTranslationKey(treino.titulo))}
                         </button>
                     </div>
 

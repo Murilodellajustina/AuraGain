@@ -10,7 +10,7 @@ export default function Sidebar({ children }) {
     const navigate = useNavigate();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-    const [nome, setNome] = useState("Visitante");
+    const [nome, setNome] = useState(t("visitante"));
     const [letraInicial, setLetraInicial] = useState("V");
     const [email, setEmail] = useState("");
 
