@@ -123,6 +123,11 @@ export default function Sidebar({ children }) {
                             {t("sidebar_evolucao")}
                         </Link>
                     </li>
+                    <li className="nav-item mb-2">
+                        <Link to="/telaMedidas" className="nav-link text-dark custom-hover">
+                            {t("sidebar_medidas")}
+                        </Link>
+                    </li>
                     <hr className="text-secondary" />
                     <li className="nav-item mb-2" title="Alt+P">
                         <Link to="/areaPersonal" className="nav-link text-dark custom-hover">
