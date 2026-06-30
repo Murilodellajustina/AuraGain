@@ -309,17 +309,16 @@ A documentação do código Java foi gerada utilizando **Javadoc**.
 ## Login e Página Inicial
 
 <p align="center">
-  <img src="Assets/TelaLoginAuraGain.png" alt="Tela de Login" width="45%">
-  <img src="Assets/TelaInicialAuraGain.png" alt="Tela Inicial" width="45%">
+  <img src="Assests/TelaLoginAuragain.png" alt="Tela de Login" width="45%">
+  <img src="Assests/TelaInicialAuraGain.png" alt="Tela Inicial" width="45%">
 </p>
-
 ---
 
 ## Evolução e Cadastro
 
 <p align="center">
-  <img src="Assets/TelaEvolucaoAuraGain.png" alt="Tela de Evolução" width="45%">
-  <img src="Assets/TelaCadastrarAuraGain.png" alt="Tela de Cadastro" width="45%">
+  <img src="Assests/TelaEvolucaoAuraGain.png" alt="Tela de Evolução" width="45%">
+  <img src="Assests/TelaCadastrarAuraGain.png" alt="Tela de Cadastro" width="45%">
 </p>
 
 ---
@@ -327,8 +326,8 @@ A documentação do código Java foi gerada utilizando **Javadoc**.
 ## Área do Personal e Iniciar Treino
 
 <p align="center">
-  <img src="Assets/TelaAreaDoPersonal.png" alt="Área do Personal" width="45%">
-  <img src="Assets/TelaIniciarTreino.png" alt="Iniciar Treino" width="45%">
+  <img src="Assests/TelaAreaDoPersonal.png" alt="Área do Personal" width="45%">
+  <img src="Assests/TelaIniciarTreino.png" alt="Iniciar Treino" width="45%">
 </p>
 
 ---
@@ -336,8 +335,8 @@ A documentação do código Java foi gerada utilizando **Javadoc**.
 ## Medidas Corporais e Perfil
 
 <p align="center">
-  <img src="Assets/TelaMedidasAuraGain.png" alt="Medidas Corporais" width="45%">
-  <img src="Assets/TelaPerfil.png" alt="Tela de Perfil" width="45%">
+  <img src="Assests/TelaMedidasAuraGain.png" alt="Medidas Corporais" width="45%">
+  <img src="Assests/TelaPerfil.png" alt="Tela de Perfil" width="45%">
 </p>
 
 ---
