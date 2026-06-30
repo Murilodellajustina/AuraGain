@@ -306,25 +306,39 @@ A documentação do código Java foi gerada utilizando **Javadoc**.
 
 # 📸 Telas do Sistema
 
-> Adicione aqui capturas de tela das principais funcionalidades.
+## Login e Página Inicial
 
-| Login | Inicial |
-|-------|-----------|
-| ![Tela de Login](assets/TelaLoginAuraGain.png) | ![Tela Inicial](assets/TelaInicialAuraGain.png) |
+<p align="center">
+  <img src="assets/TelaLoginAuraGain.png" alt="Tela de Login" width="45%">
+  <img src="assets/TelaInicialAuraGain.png" alt="Tela Inicial" width="45%">
+</p>
 
-| Evolução | Criar Treino |
-|-----------|--------------|
-| ![Tela evolucao](assets/TelaEvolucaoAuraGain.png) | ![Tela Inicial](assets/TelaCadastrarAuraGain.png) |
+---
 
-| Area do personal | Iniciar Treino |
-|-----------|--------------|
-| ![Tela personal](assets/TelaAreaDoPersonal.png) | ![Tela Iniciar treino](assets/TelaIniciarTreino.png) |
+## Evolução e Cadastro
 
+<p align="center">
+  <img src="assets/TelaEvolucaoAuraGain.png" alt="Tela de Evolução" width="45%">
+  <img src="assets/TelaCadastrarAuraGain.png" alt="Tela de Cadastro" width="45%">
+</p>
 
-| Medidas | Criar Treino |
-|-----------|--------------|
-| ![Tela Medidas](assets/TelaMedidasAuraGain.png) | ![Tela Perfil](assets/TelaPerfil.png) |
+---
 
+## Área do Personal e Iniciar Treino
+
+<p align="center">
+  <img src="assets/TelaAreaDoPersonal.png" alt="Área do Personal" width="45%">
+  <img src="assets/TelaIniciarTreino.png" alt="Iniciar Treino" width="45%">
+</p>
+
+---
+
+## Medidas Corporais e Perfil
+
+<p align="center">
+  <img src="assets/TelaMedidasAuraGain.png" alt="Medidas Corporais" width="45%">
+  <img src="assets/TelaPerfil.png" alt="Tela de Perfil" width="45%">
+</p>
 
 ---
 
