@@ -170,16 +170,16 @@ export default function PaginaInicial() {
     
         const mapaMetricas = {
             peso: { key: "peso", label: t("medida_peso") || "Peso", unidade: "kg" },
-            imc: { key: "imc", label: "IMC", unidade: "pts" },
+            imc: { key: "imc", label: t("medida_imc"), unidade: "pts" },
             torax: { key: "torax", label: t("medida_torax") || "Tórax", unidade: "cm" },
             cintura: { key: "cintura", label: t("medida_cintura") || "Cintura", unidade: "cm" },
-            quadril: { key: "quadril", label: "Quadril", unidade: "cm" },
-            bracoEsquerdo: { key: "bracoEsquerdo", label: "Braço Esq.", unidade: "cm" },
-            bracoDireito: { key: "bracoDireito", label: "Braço Dir.", unidade: "cm" },
-            coxaEsquerda: { key: "coxaEsquerda", label: "Coxa Esq.", unidade: "cm" },
-            coxaDireita: { key: "coxaDireita", label: "Coxa Dir.", unidade: "cm" },
-            panturrilhaEsquerda: { key: "panturrilhaEsquerda", label: "Panturrilha Esq.", unidade: "cm" },
-            panturrilhaDireita: { key: "panturrilhaDireita", label: "Panturrilha Dir.", unidade: "cm" }
+            quadril: { key: "quadril", label: t("medida_quadril"), unidade: "cm" },
+            bracoEsquerdo: { key: "bracoEsquerdo", label: t("medida_braco_esq"), unidade: "cm" },
+            bracoDireito: { key: "bracoDireito", label: t("medida_braco_dir"), unidade: "cm" },
+            coxaEsquerda: { key: "coxaEsquerda", label: t("medida_coxa_esq"), unidade: "cm" },
+            coxaDireita: { key: "coxaDireita", label: t("medida_coxa_dir"), unidade: "cm" },
+            panturrilhaEsquerda: { key: "panturrilhaEsquerda", label: t("medida_panturrilha_esq"), unidade: "cm" },
+            panturrilhaDireita: { key: "panturrilhaDireita", label: t("medida_panturrilha_dir"), unidade: "cm" }
         };
     
     const [metricaSelecionada, setMetricaSelecionada] = useState(mapaMetricas.peso);

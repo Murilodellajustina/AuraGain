@@ -23,17 +23,17 @@ export default function TelaMedidas() {
     });
 
     const mapaMetricas = {
-        peso: { key: "peso", label: t("medida_peso") || "Peso", unidade: "kg" },
-        imc: { key: "imc", label: "IMC", unidade: "pts" },
-        torax: { key: "torax", label: t("medida_torax") || "Tórax", unidade: "cm" },
-        cintura: { key: "cintura", label: t("medida_cintura") || "Cintura", unidade: "cm" },
-        quadril: { key: "quadril", label: "Quadril", unidade: "cm" },
-        bracoEsquerdo: { key: "bracoEsquerdo", label: "Braço Esq.", unidade: "cm" },
-        bracoDireito: { key: "bracoDireito", label: "Braço Dir.", unidade: "cm" },
-        coxaEsquerda: { key: "coxaEsquerda", label: "Coxa Esq.", unidade: "cm" },
-        coxaDireita: { key: "coxaDireita", label: "Coxa Dir.", unidade: "cm" },
-        panturrilhaEsquerda: { key: "panturrilhaEsquerda", label: "Panturrilha Esq.", unidade: "cm" },
-        panturrilhaDireita: { key: "panturrilhaDireita", label: "Panturrilha Dir.", unidade: "cm" }
+        peso: { key: "peso", label: t("medida_peso") , unidade: "kg" },
+        imc: { key: "imc", label: t("medida_imc"), unidade: "pts" },
+        torax: { key: "torax", label: t("medida_torax"), unidade: "cm" },
+        cintura: { key: "cintura", label: t("medida_cintura") , unidade: "cm" },
+        quadril: { key: "quadril", label: t("medida_quadril"), unidade: "cm" },
+        bracoEsquerdo: { key: "bracoEsquerdo", label: t("label_braco_esquerdo2"), unidade: "cm" },
+        bracoDireito: { key: "bracoDireito", label: t("medida_braco_dir"), unidade: "cm" },
+        coxaEsquerda: { key: "coxaEsquerda", label: t("medida_coxa_esq"), unidade: "cm" },
+        coxaDireita: { key: "coxaDireita", label: t("medida_coxa_dir"), unidade: "cm" },
+        panturrilhaEsquerda: { key: "panturrilhaEsquerda", label: t("medida_panturrilha_esq"), unidade: "cm" },
+        panturrilhaDireita: { key: "panturrilhaDireita", label: t("medida_panturrilha_dir"), unidade: "cm" }
     };
 
     const [metricaSelecionada, setMetricaSelecionada] = useState(mapaMetricas.peso);
@@ -62,7 +62,7 @@ export default function TelaMedidas() {
                 setHistorico(dadosFormatados);
             }
         } catch (error) {
-            console.error("Erro ao buscar medidas:", error);
+            console.error(t("medida_erro_salvar"), error);
         }
     };
 
@@ -83,13 +83,13 @@ export default function TelaMedidas() {
             });
 
             if (res.ok) {
-                alert(t("medida_salva_sucesso") || "Avaliação guardada com sucesso!");
+                alert(t("medida_salva_sucesso") );
                 setForm({ peso: '', altura: '', torax: '', cintura: '', quadril: '', bracoEsquerdo: '', bracoDireito: '', coxaEsquerda: '', coxaDireita: '', panturrilhaEsquerda: '', panturrilhaDireita: '' });
                 setAbaAtiva("GRAFICO");
                 carregarHistorico();
             }
         } catch (error) {
-            alert(t("medida_erro_salvar") || "Erro ao guardar avaliação.");
+            alert(t("medida_erro_salvar"));
         } finally {
             setCarregando(false);
         }
@@ -143,8 +143,8 @@ export default function TelaMedidas() {
                                     <div className="col-md-5 d-flex flex-column align-items-center justify-content-center position-relative mb-4 mb-md-0 border-end">
                                         
                                         <div className="position-absolute top-0 start-0 m-3 d-flex flex-column gap-2">
-                                            <button className={`btn btn-sm rounded-pill fw-bold shadow-sm ${metricaSelecionada.key === 'peso' ? 'btn-success' : 'btn-light border'}`} onClick={() => setMetricaSelecionada(mapaMetricas.peso)}>Peso</button>
-                                            <button className={`btn btn-sm rounded-pill fw-bold shadow-sm ${metricaSelecionada.key === 'imc' ? 'btn-success' : 'btn-light border'}`} onClick={() => setMetricaSelecionada(mapaMetricas.imc)}>IMC</button>
+                                            <button className={`btn btn-sm rounded-pill fw-bold shadow-sm ${metricaSelecionada.key === 'peso' ? 'btn-success' : 'btn-light border'}`} onClick={() => setMetricaSelecionada(mapaMetricas.peso)}>{t("medida_peso")}</button>
+                                            <button className={`btn btn-sm rounded-pill fw-bold shadow-sm ${metricaSelecionada.key === 'imc' ? 'btn-success' : 'btn-light border'}`} onClick={() => setMetricaSelecionada(mapaMetricas.imc)}>{t("medida_imc")}</button>
                                         </div>
 
                                         <svg width="220" height="400" viewBox="0 0 200 400" className="drop-shadow">
@@ -167,7 +167,7 @@ export default function TelaMedidas() {
                                     <div className="col-md-7 ps-md-4">
                                         <div className="d-flex justify-content-between align-items-center mb-4">
                                             <h5 className="fw-bold text-dark m-0">
-                                                Evolução: <span className="text-success">{metricaSelecionada.label}</span>
+                                                {t("sidebar_evolucao")}: <span className="text-success">{metricaSelecionada.label}</span>
                                             </h5>
                                         </div>
 
@@ -206,36 +206,36 @@ export default function TelaMedidas() {
                                     <h6 className="fw-bold text-success mb-3 pb-2 border-bottom">{t("medidas_gerais") || "Medidas Gerais"}</h6>
                                     <div className="row g-3 mb-4">
                                         <div className="col-md-6">
-                                            <label className="form-label fw-bold small text-muted">Peso Corporal (kg)</label>
+                                            <label className="form-label fw-bold small text-muted">{t("label_peso_corporal")}</label>
                                             <input type="number" step="0.1" className="form-control form-control-lg bg-light" name="peso" value={form.peso} onChange={handleInputChange} required />
                                         </div>
                                         <div className="col-md-6">
-                                            <label className="form-label fw-bold small text-muted">Altura (m)</label>
-                                            <input type="number" step="0.01" className="form-control form-control-lg bg-light" name="altura" placeholder="Ex: 1.80" value={form.altura} onChange={handleInputChange} required />
+                                            <label className="form-label fw-bold small text-muted">{t("label_altura")}</label>
+                                            <input type="number" step="0.01" className="form-control form-control-lg bg-light" name="altura" placeholder={t("placeholder_altura")} value={form.altura} onChange={handleInputChange} required />
                                         </div>
                                     </div>
 
                                     <h6 className="fw-bold text-success mb-3 pb-2 border-bottom">{t("medidas_circunferencia") || "Circunferências Musculares (cm)"}</h6>
                                     <div className="row g-3 mb-3">
-                                        <div className="col-4"><label className="form-label text-muted small fw-bold">Tórax</label><input type="number" step="0.1" className="form-control bg-light" name="torax" value={form.torax} onChange={handleInputChange} /></div>
-                                        <div className="col-4"><label className="form-label text-muted small fw-bold">Cintura</label><input type="number" step="0.1" className="form-control bg-light" name="cintura" value={form.cintura} onChange={handleInputChange} /></div>
-                                        <div className="col-4"><label className="form-label text-muted small fw-bold">Quadril</label><input type="number" step="0.1" className="form-control bg-light" name="quadril" value={form.quadril} onChange={handleInputChange} /></div>
+                                        <div className="col-4"><label className="form-label text-muted small fw-bold">{t("medida_torax")}</label><input type="number" step="0.1" className="form-control bg-light" name="torax" value={form.torax} onChange={handleInputChange} /></div>
+                                        <div className="col-4"><label className="form-label text-muted small fw-bold">{t("medida_cintura")}</label><input type="number" step="0.1" className="form-control bg-light" name="cintura" value={form.cintura} onChange={handleInputChange} /></div>
+                                        <div className="col-4"><label className="form-label text-muted small fw-bold">{t("medida_quadril")}</label><input type="number" step="0.1" className="form-control bg-light" name="quadril" value={form.quadril} onChange={handleInputChange} /></div>
                                     </div>
                                     <div className="row g-3 mb-3">
-                                        <div className="col-6"><label className="form-label text-muted small fw-bold">Braço Esquerdo</label><input type="number" step="0.1" className="form-control bg-light" name="bracoEsquerdo" value={form.bracoEsquerdo} onChange={handleInputChange} /></div>
-                                        <div className="col-6"><label className="form-label text-muted small fw-bold">Braço Direito</label><input type="number" step="0.1" className="form-control bg-light" name="bracoDireito" value={form.bracoDireito} onChange={handleInputChange} /></div>
+                                        <div className="col-6"><label className="form-label text-muted small fw-bold">{t("label_braco_esquerdo2")}</label><input type="number" step="0.1" className="form-control bg-light" name="bracoEsquerdo" value={form.bracoEsquerdo} onChange={handleInputChange} /></div>
+                                        <div className="col-6"><label className="form-label text-muted small fw-bold">{t("label_braco_direito")}</label><input type="number" step="0.1" className="form-control bg-light" name="bracoDireito" value={form.bracoDireito} onChange={handleInputChange} /></div>
                                     </div>
                                     <div className="row g-3 mb-5">
-                                        <div className="col-6"><label className="form-label text-muted small fw-bold">Coxa Esquerda</label><input type="number" step="0.1" className="form-control bg-light" name="coxaEsquerda" value={form.coxaEsquerda} onChange={handleInputChange} /></div>
-                                        <div className="col-6"><label className="form-label text-muted small fw-bold">Coxa Direita</label><input type="number" step="0.1" className="form-control bg-light" name="coxaDireita" value={form.coxaDireita} onChange={handleInputChange} /></div>
+                                        <div className="col-6"><label className="form-label text-muted small fw-bold">{t("label_coxa_esquerda")}</label><input type="number" step="0.1" className="form-control bg-light" name="coxaEsquerda" value={form.coxaEsquerda} onChange={handleInputChange} /></div>
+                                        <div className="col-6"><label className="form-label text-muted small fw-bold">{t("label_coxa_direita")}</label><input type="number" step="0.1" className="form-control bg-light" name="coxaDireita" value={form.coxaDireita} onChange={handleInputChange} /></div>
                                     </div>
                                     <div className="row g-3 mb-5">
-                                        <div className="col-6"><label className="form-label text-muted small fw-bold">Panturrilha Esquerda</label><input type="number" step="0.1" className="form-control bg-light" name="panturrilhaEsquerda" value={form.panturrilhaEsquerda} onChange={handleInputChange} /></div>
-                                        <div className="col-6"><label className="form-label text-muted small fw-bold">Panturrilha Direita</label><input type="number" step="0.1" className="form-control bg-light" name="panturrilhaDireita" value={form.panturrilhaDireita} onChange={handleInputChange} /></div>
+                                        <div className="col-6"><label className="form-label text-muted small fw-bold">{t("label_panturrilha_esquerda")}</label><input type="number" step="0.1" className="form-control bg-light" name="panturrilhaEsquerda" value={form.panturrilhaEsquerda} onChange={handleInputChange} /></div>
+                                        <div className="col-6"><label className="form-label text-muted small fw-bold">{t("label_panturrilha_direita")}</label><input type="number" step="0.1" className="form-control bg-light" name="panturrilhaDireita" value={form.panturrilhaDireita} onChange={handleInputChange} /></div>
                                     </div>
 
                                     <button type="submit" className="btn btn-success btn-lg w-100 fw-bold rounded-pill shadow" disabled={carregando}>
-                                        {carregando ? "Salvando..." : "Salvar Nova Avaliação Física"}
+                                        {carregando ? t("btn_salvando") : t("btn_salvar_avaliacao")}
                                     </button>
                                 </form>
                             )}
