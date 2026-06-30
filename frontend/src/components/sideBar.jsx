@@ -34,7 +34,9 @@ export default function Sidebar({ children }) {
         "Alt+M": () => setIsSidebarOpen(prev => !prev), 
         "Alt+T": () => navigate("/telaCriarTreino"),     
         "Alt+P": () => navigate("/areaPersonal"),       
-        "Alt+U": () => navigate("/perfil"),       
+        "Alt+U": () => navigate("/perfil"),   
+        "Alt+Q": () => navigate("/telaEvolucao"),
+        "Alt+X": () => mavigate("/telaMedidas"),  
         "Alt+S": () => handleLogout()                    
     });
 
@@ -118,12 +120,12 @@ export default function Sidebar({ children }) {
                             {t("sidebar_perfil")}
                         </Link>
                     </li>
-                    <li className="nav-item mb-2">
+                    <li className="nav-item mb-2" title="(Alt+Q)">
                         <Link to="/telaEvolucao" className="nav-link text-dark custom-hover">
                             {t("sidebar_evolucao")}
                         </Link>
                     </li>
-                    <li className="nav-item mb-2">
+                    <li className="nav-item mb-2" title="(Alt+X)">
                         <Link to="/telaMedidas" className="nav-link text-dark custom-hover">
                             {t("sidebar_medidas")}
                         </Link>

@@ -15,9 +15,11 @@ import Perfil from "./pages/perfil.jsx";
 import TelaEditarTreino from "./pages/telaEditarTreino.jsx";
 import TelaEvolucao from "./pages/telaEvolucao.jsx";
 import TelaMedidas from "./pages/telaMedidas.jsx";
+import TelaLandingPage from "./pages/telaLandingPage.jsx";
 
 const router = createHashRouter([
-  { path: "/", element: <Login /> },
+  { path: "/", element: <TelaLandingPage />},
+  { path: "/login", element: <Login /> },
   { path: "/cadastro", element: <Cadastro /> },
   { path: "/cadastroPersonal", element: <CadastroPersonal />},
   { path: "/paginaInicial", element: <PaginaInicial /> },

@@ -1,11 +1,17 @@
 package br.edu.ifsc.lages.lds.auraGain.dto;
 
 import java.time.LocalDate;
+import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(description = "Data Transfer Object for user's measures.")
 public class MedidaFisicaDTO {
+    @Schema(description = "The unique identifier of the measures for a user.", example = "15", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long id;
+    @Schema(description = "User email.", example = "user@gmail.com", requiredMode = Schema.RequiredMode.REQUIRED)
     private String emailUsuario;
+    @Schema(description = "Registers when the measures were informed", example = "29/06/2026", requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDate dataAvaliacao;
+    @Schema(description = "User measures.", example = "90.8, 1.89 ...", requiredMode = Schema.RequiredMode.REQUIRED)
     private Double peso, altura, imc, torax, cintura, quadril, bracoEsquerdo, bracoDireito, coxaEsquerda, coxaDireita, panturrilhaEsquerda, panturrilhaDireita;
 
     public Long getId() { return id; } public void setId(Long id) { this.id = id; }
