@@ -208,6 +208,7 @@ const resources = {
             "lp_imagem_placeholder": "Interface Mobile de Treino",
             "lp_imagem_placeholder2": "Mapa Corporal Interativo",
             "lp_imagem_placeholder3": "Dashboard do Personal",
+
             "medida_imc": "IMC",
             "medida_quadril": "Quadril",
             "medida_braco_esq": "Braço Esq.",
@@ -220,7 +221,7 @@ const resources = {
             "label_peso_corporal": "Peso Corporal (kg)",
             "label_altura": "Altura (m)",
             "placeholder_altura": "Ex: 1.80",
-            "label_braco_esquerdo": "Braço Esquerdo",
+            "label_braco_esquerdo2": "Braço Esquerdo",
             "label_braco_direito": "Braço Direito",
             "label_coxa_esquerda": "Coxa Esquerda",
             "label_coxa_direita": "Coxa Direita",
@@ -591,7 +592,7 @@ const resources = {
             "label_peso_corporal": "Body Weight (kg)",
             "label_altura": "Height (m)",
             "placeholder_altura": "Ex: 1.80",
-            "label_braco_esquerdo": "Left Arm",
+            "label_braco_esquerdo2": "Left Arm",
             "label_braco_direito": "Right Arm",
             "label_coxa_esquerda": "Left Thigh",
             "label_coxa_direita": "Right Thigh",
@@ -601,6 +602,7 @@ const resources = {
             "btn_salvar_avaliacao": "Save New Physical Assessment",
             "erro_buscar_medidas": "Error fetching measurements:",
 
+            "90_90_hamstring": "90_90_hamstring",
             "3_4_sit_up": "3/4 Sit-Up",
             "ab_crunch_machine": "Ab Crunch Machine",
             "ab_roller": "Ab Roller",
@@ -750,6 +752,7 @@ const resources = {
             "lats": "Lats",
             "traps": "Traps",
             "forearms": "Forearms",
+            "medida_braco_esq": "L. Arm"
         }
     },
     es: {
@@ -962,7 +965,7 @@ const resources = {
             "label_peso_corporal": "Peso Corporal (kg)",
             "label_altura": "Altura (m)",
             "placeholder_altura": "Ej: 1.80",
-            "label_braco_esquerdo": "Brazo Izquierdo",
+            "label_braco_esquerdo2": "Brazo Izquierdo",
             "label_braco_direito": "Brazo Derecho",
             "label_coxa_esquerda": "Muslo Izquierdo",
             "label_coxa_direita": "Muslo Derecho",

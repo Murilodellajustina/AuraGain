@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import useAtalhos from "../hooks/useAtalhos";
 
 import logo from "../imagens/logoAuraGain.png";
-import heroImg from "../assets/hero.png"; 
+import heroImg from "../assets/hero.png";
 
 export default function TelaLandingPage() {
     const navigate = useNavigate();
@@ -16,13 +16,21 @@ export default function TelaLandingPage() {
         "Alt+L": () => navigate("/login")
     });
 
+    const scrollToSection = (e) => {
+        e.preventDefault();
+        const element = document.getElementById("funcionalidades");
+        if (element) {
+            element.scrollIntoView({ behavior: "smooth" });
+        }
+    };
+
     return (
         <div className="min-vh-100 bg-white" style={{ overflowX: "hidden" }}>
-            
+
             <nav className="navbar navbar-expand-lg navbar-light bg-white py-3 shadow-sm fixed-top">
                 <div className="container">
                     <Link className="navbar-brand d-flex align-items-center gap-2 fw-bold text-success" to="/">
-                        <img src={logo} alt="AuraGain Logo" height="60" /> 
+                        <img src={logo} alt="AuraGain Logo" height="60" />
                         AuraGain
                     </Link>
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -30,12 +38,12 @@ export default function TelaLandingPage() {
                     </button>
                     <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
                         <ul className="navbar-nav align-items-center gap-3">
-                            <li className="nav-item">
-                                <a className="nav-link text-dark fw-bold custom-hover" href="#funcionalidades">{t("lp_nav_funcionalidades")}</a>
-                            </li>
-                            <li className="nav-item">
-                                <a className="nav-link text-dark fw-bold custom-hover" href="#personal">{t("lp_nav_personal")}</a>
-                            </li>
+                            <a className="nav-link text-dark fw-bold custom-hover" href="#funcionalidades" onClick={scrollToSection}>
+                                {t("lp_nav_funcionalidades")}
+                            </a>
+                            <a className="nav-link text-dark fw-bold custom-hover" href="#personal" onClick={scrollToSection}>
+                                {t("lp_nav_personal")}
+                            </a>
                             <li className="nav-item">
                                 <Link to="/login" className="btn btn-outline-success fw-bold px-4 rounded-pill" title="(Alt+L)">
                                     {t("lp_nav_entrar")}
@@ -69,9 +77,9 @@ export default function TelaLandingPage() {
                                 <Link to="/cadastro" className="btn btn-success btn-lg fw-bold px-4 rounded-pill shadow">
                                     {t("lp_hero_cta")}
                                 </Link>
-                                <a href="#funcionalidades" className="btn btn-outline-secondary btn-lg fw-bold px-4 rounded-pill">
+                                <Link to="/login" className="btn btn-outline-secondary btn-lg fw-bold px-4 rounded-pill">
                                     {t("lp_hero_saber_mais")}
-                                </a>
+                                </Link>
                             </div>
                         </div>
                         <div className="col-lg-6 text-center">
