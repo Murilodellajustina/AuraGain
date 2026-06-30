@@ -32,6 +32,11 @@ export default function IniciarTreino() {
     const [pesos, setPesos] = useState({});
 
     useEffect(() => {
+        const nomeUsuario = localStorage.getItem("userName");
+
+        if (nomeUsuario) {
+            setNome(nomeUsuario);
+        }
         if (!treino) {
             navigate("/paginaInicial");
             return;
@@ -39,7 +44,7 @@ export default function IniciarTreino() {
 
         const pesosIniciais = {};
         treino.exercicios.forEach(ex => {
-            pesosIniciais[ex.id] = ex.peso || 0; 
+            pesosIniciais[ex.id] = ex.peso || 0;
         });
         setPesos(pesosIniciais);
     }, [treino, navigate]);
@@ -119,7 +124,7 @@ export default function IniciarTreino() {
 
     const finalizarTreino = async () => {
         if (!treinoFinalizado) return;
-        
+
         setCarregando(true);
         const emailUsuario = localStorage.getItem("userEmail");
 
@@ -166,14 +171,14 @@ export default function IniciarTreino() {
 
     const treinoAtual = meusTreinos.length > 0 ? meusTreinos[indiceTreinoAtivo] : null;
 
-        const toTranslationKey = (text) =>
+    const toTranslationKey = (text) =>
         text
             .toLowerCase()
             .replace(/[^a-z0-9]+/g, "_")
             .replace(/^_+|_+$/g, "");
 
     useAtalhos({
-        "Alt+D": () => navigate("/paginaInicial"), 
+        "Alt+D": () => navigate("/paginaInicial"),
         "Alt+F": () => finalizarTreino(),
         "Alt+I": () => imprimirFichaPDF()
     });
@@ -220,36 +225,36 @@ export default function IniciarTreino() {
                         <div key={itemExercicio.id} className="card shadow-sm border-0 rounded-4 mb-3 p-3">
                             <div className="d-flex justify-content-between align-items-center">
                                 <div className="d-flex align-items-center gap-3">
-                                    <input 
-                                        type="checkbox" 
-                                        className="form-check-input mt-0" 
+                                    <input
+                                        type="checkbox"
+                                        className="form-check-input mt-0"
                                         style={{ width: "25px", height: "25px", cursor: "pointer" }}
                                         checked={!!realizados[itemExercicio.id]}
-                                        onChange={() => alternarRealizado(itemExercicio.id)} 
+                                        onChange={() => alternarRealizado(itemExercicio.id)}
                                     />
                                     <div>
                                         <h5 className={`mb-0 fw-bold ${realizados[itemExercicio.id] ? "text-success" : "text-dark"}`}>
-                                            {itemExercicio.exercicio.nome}
+                                            {t(toTranslationKey(itemExercicio.exercicio.nome))}
                                         </h5>
                                         <small className="text-muted">
                                             {itemExercicio.series} {t("series")} x {itemExercicio.repeticoesAlvo} {t("reps")}
                                         </small>
                                     </div>
                                 </div>
-                            
-                            {!realizados[itemExercicio.id] && (
+
+                                {!realizados[itemExercicio.id] && (
                                     <div className="input-group" style={{ width: "120px" }}>
-                                        <input 
-                                            type="number" 
-                                            className="form-control text-center fw-bold" 
+                                        <input
+                                            type="number"
+                                            className="form-control text-center fw-bold"
                                             min="0"
-                                            value={pesos[itemExercicio.id] !== undefined ? pesos[itemExercicio.id] : ''} 
-                                            onChange={(e) => handlePesoChange(itemExercicio.id, e.target.value)} 
+                                            value={pesos[itemExercicio.id] !== undefined ? pesos[itemExercicio.id] : ''}
+                                            onChange={(e) => handlePesoChange(itemExercicio.id, e.target.value)}
                                         />
                                         <span className="input-group-text bg-white fw-bold">kg</span>
                                     </div>
-                                
-                            )}
+
+                                )}
                             </div>
                         </div>
                     ))}
@@ -263,18 +268,18 @@ export default function IniciarTreino() {
                         <div className="progress mb-4" style={{ height: "15px", borderRadius: "10px" }}>
                             <div
                                 className="progress-bar"
-                                style={{ 
-                                    width: `${progresso}%`, 
+                                style={{
+                                    width: `${progresso}%`,
                                     backgroundColor: '#119943',
-                                    backgroundImage: 'linear-gradient(to right, #95fbc8, #46ff74, #00ff80)', 
+                                    backgroundImage: 'linear-gradient(to right, #95fbc8, #46ff74, #00ff80)',
                                     transition: "width 0.4s ease-in-out"
                                 }}
                             />
                         </div>
 
-                        <button 
-                            className={`btn btn-lg w-100 fw-bold rounded-pill shadow-sm ${treinoFinalizado ? 'btn-success' : 'btn-secondary'}`} 
-                            title="Alt+F" 
+                        <button
+                            className={`btn btn-lg w-100 fw-bold rounded-pill shadow-sm ${treinoFinalizado ? 'btn-success' : 'btn-secondary'}`}
+                            title="Alt+F"
                             disabled={!treinoFinalizado || carregando}
                             onClick={finalizarTreino}
                         >

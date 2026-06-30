@@ -13,7 +13,7 @@ import { t } from "i18next";
 export default function TelaEvolucao() {
     const navigate = useNavigate();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    
+
     const [exercicios, setExercicios] = useState([]);
     const [exercicioSelecionado, setExercicioSelecionado] = useState(null);
     const [dadosGrafico, setDadosGrafico] = useState([]);
@@ -44,7 +44,7 @@ export default function TelaEvolucao() {
                 const res = await fetch(`http://localhost:8080/api/treinos/historico/${email}/${exercicioSelecionado.value}`);
                 if (res.ok) {
                     const historico = await res.json();
-                    
+
                     const dadosFormatados = historico.map(item => {
                         const partesData = item.data.split("-");
                         return {
@@ -52,7 +52,7 @@ export default function TelaEvolucao() {
                             dataFormatada: `${partesData[2]}/${partesData[1]}`
                         };
                     });
-                    
+
                     setDadosGrafico(dadosFormatados);
                 }
             } catch (error) {
@@ -68,20 +68,26 @@ export default function TelaEvolucao() {
         "Alt+M": () => setIsSidebarOpen(prev => !prev),
         "Alt+D": () => navigate("/paginaInicial")
     });
-
-    const opcoesExercicios = exercicios.map(ex => ({ value: ex.id, label: ex.nome }));
-    
     const toTranslationKey = (text) =>
         text
             .toLowerCase()
             .replace(/[^a-z0-9]+/g, "_")
             .replace(/^_+|_+$/g, "");
 
+    const opcoesExercicios = exercicios.map(ex => ({ value: ex.id, label: t(toTranslationKey(ex.nome)) }));
+
+
+
     return (
-        <div className="container-fluid min-vh-100 bg-light p-0">
+        <div className="container-fluid min-vh-100 bg-light p-0"
+            style={{
+                backgroundColor: '#11998e',
+                backgroundImage: 'linear-gradient(to right, #fdfffe, #d6ffe0, #fdfffe)',
+                overflowX: 'hidden'
+            }}>
             <Sidebar>
                 <div className="container py-5" style={{ maxWidth: "800px" }}>
-                    
+
                     <div className="text-center mb-5">
                         <h2 className="fw-bold text-success">📈 {t("evo_titulo")}</h2>
                     </div>
@@ -114,7 +120,7 @@ export default function TelaEvolucao() {
                                     <h5 className="fw-bold text-center mb-4 text-dark">
                                         {t("evo_evolucao_em")} <span className="text-success">{exercicioSelecionado.label}</span>
                                     </h5>
-                                    
+
                                     <div style={{ width: '100%', height: 400 }}>
                                         <ResponsiveContainer>
                                             <LineChart
@@ -122,12 +128,12 @@ export default function TelaEvolucao() {
                                                 margin={{ top: 20, right: 30, left: 0, bottom: 0 }}
                                             >
                                                 <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" vertical={false} />
-                                                <XAxis dataKey="dataFormatada" stroke="#6c757d" tick={{fill: '#6c757d'}} dy={10} />
-                                                <YAxis stroke="#6c757d" tick={{fill: '#6c757d'}} unit="kg" />
-                                                <Line 
-                                                    type="monotone" 
-                                                    dataKey="peso" 
-                                                    stroke="#198754" 
+                                                <XAxis dataKey="dataFormatada" stroke="#6c757d" tick={{ fill: '#6c757d' }} dy={10} />
+                                                <YAxis stroke="#6c757d" tick={{ fill: '#6c757d' }} unit="kg" />
+                                                <Line
+                                                    type="monotone"
+                                                    dataKey="peso"
+                                                    stroke="#198754"
                                                     strokeWidth={4}
                                                     dot={{ r: 6, fill: "#198754", stroke: "#fff", strokeWidth: 2 }}
                                                     activeDot={{ r: 8, fill: "#198754", stroke: "#fff", strokeWidth: 2 }}
